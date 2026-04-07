@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 30
+    },
+    "auditLog": "C:\\Users\\Rahul\\OneDrive\\Desktop\\InternShip\\Projects\\Resume-Builder\\backend\\logs\\.339835aed4f44443a55f3167054db4618ba58b93-audit.json",
+    "files": [
+        {
+            "date": 1775551369372,
+            "name": "C:\\Users\\Rahul\\OneDrive\\Desktop\\InternShip\\Projects\\Resume-Builder\\backend\\logs\\exceptions-2026-04-07.log",
+            "hash": "09fd9feffd8a4218769173342e805cc5587413df1210d795b1ee54c771ba37e8"
+        }
+    ],
+    "hashType": "sha256"
+}

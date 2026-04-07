@@ -1,0 +1,23 @@
+{"env":"development","level":"info","message":"Server running on port 5000","port":"5000","timestamp":"2026-04-07 14:12:49.608"}
+{"level":"info","message":"MongoDB connected successfully","timestamp":"2026-04-07 14:12:49.651"}
+{"env":"development","level":"info","message":"Server running on port 5000","port":"5000","timestamp":"2026-04-07 14:13:26.105"}
+{"level":"info","message":"MongoDB connected successfully","timestamp":"2026-04-07 14:13:26.175"}
+{"env":"development","level":"info","message":"Server running on port 5000","port":"5000","timestamp":"2026-04-07 14:13:50.039"}
+{"level":"info","message":"MongoDB connected successfully","timestamp":"2026-04-07 14:13:50.105"}
+{"env":"development","level":"info","message":"Server running on port 5000","port":"5000","timestamp":"2026-04-07 14:16:22.607"}
+{"level":"info","message":"MongoDB connected successfully","timestamp":"2026-04-07 14:16:22.666"}
+{"env":"development","level":"info","message":"Server running on port 5000","port":"5000","timestamp":"2026-04-07 14:16:41.446"}
+{"level":"info","message":"MongoDB connected successfully","timestamp":"2026-04-07 14:16:41.490"}
+{"level":"info","message":"Logger smoke test","timestamp":"2026-04-07 14:17:14.901"}
+{"level":"warn","message":"Warn test","timestamp":"2026-04-07 14:17:14.905"}
+{"level":"error","message":"Error test","timestamp":"2026-04-07 14:17:14.906"}
+{"env":"development","level":"info","message":"Server running on port 5000","port":"5000","timestamp":"2026-04-07 15:24:11.754"}
+{"level":"info","message":"MongoDB connected successfully","timestamp":"2026-04-07 15:24:11.781"}
+{"env":"development","level":"info","message":"Server running on port 5000","port":"5000","timestamp":"2026-04-07 15:28:08.958"}
+{"level":"info","message":"MongoDB connected successfully","timestamp":"2026-04-07 15:28:08.993"}
+{"env":"development","level":"info","message":"Server running on port 5000","port":"5000","timestamp":"2026-04-07 15:53:25.342"}
+{"level":"info","message":"MongoDB connected successfully","timestamp":"2026-04-07 15:53:25.365"}
+{"env":"development","level":"info","message":"Server running on port 5000","port":"5000","timestamp":"2026-04-07 15:55:28.727"}
+{"level":"info","message":"MongoDB connected successfully","timestamp":"2026-04-07 15:55:28.763"}
+{"env":"development","level":"info","message":"Server running on port 5000","port":"5000","timestamp":"2026-04-07 15:55:37.847"}
+{"level":"info","message":"MongoDB connected successfully","timestamp":"2026-04-07 15:55:37.870"}
