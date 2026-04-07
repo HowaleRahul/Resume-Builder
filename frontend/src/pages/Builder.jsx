@@ -339,6 +339,8 @@ export default function Builder() {
             /* Visual Editor */
             <div className="absolute inset-0 overflow-y-auto p-6 scroll-smooth bg-slate-50">
               <div className="max-w-3xl mx-auto space-y-6">
+                
+                {/* Personal Section */}
                 <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
                   <h3 className="text-lg font-bold text-slate-900 mb-4 flex items-center"><FileText className="mr-2 text-blue-600" size={18}/> Personal</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -349,9 +351,8 @@ export default function Builder() {
                   </div>
                 </div>
 
+                {/* Experience Section */}
                 <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-                  <div className="flex justify-between items-center mb-4">
-                    <h3 className="text-lg font-bold text-slate-900 flex items-center"><Sparkles className="mr-2 text-amber-500" size={18}/> Experience</h3>
                   <ExperienceEditor 
                     experienceArray={resumeData.experience || []} 
                     onUpdateRole={(idx, f, v) => {
@@ -363,10 +364,11 @@ export default function Builder() {
                       setResumeData({...resumeData, experience: n});
                     }} 
                     onAddRole={() => setResumeData({...resumeData, experience: [...(resumeData.experience || []), { title: '', companyOrInst: '', date: '', location: '', url: '', bullets: [''] }]})}
-                    onEnhance={(idx, text) => { /* Reuse existing enhance logic or call handleAiAction */ }}
+                    onEnhance={(idx, text) => { /* Placeholder for enhancement logic */ }}
                   />
                 </div>
 
+                {/* Skills Section */}
                 <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
                   <div className="flex justify-between items-center mb-4">
                     <h3 className="text-lg font-bold text-slate-900 flex items-center"><Code2 className="mr-2 text-emerald-500" size={18}/> Skills</h3>
@@ -407,6 +409,7 @@ export default function Builder() {
                   </div>
                 </div>
 
+                {/* Education Section */}
                 <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
                   <div className="flex justify-between items-center mb-4">
                     <h3 className="text-lg font-bold text-slate-900 flex items-center"><FileText className="mr-2 text-indigo-500" size={18}/> Education</h3>
@@ -427,6 +430,7 @@ export default function Builder() {
                   </div>
                 </div>
 
+                {/* Projects Section */}
                 <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
                   <div className="flex justify-between items-center mb-4">
                     <h3 className="text-lg font-bold text-slate-900 flex items-center"><BriefcaseBusiness className="mr-2 text-rose-500" size={18}/> Projects</h3>
@@ -448,7 +452,7 @@ export default function Builder() {
                           }} />
                         </div>
                         <div className="space-y-2">
-                           {proj.bullets.map((b, bIdx) => (
+                           {(proj.bullets || []).map((b, bIdx) => (
                              <div key={bIdx} className="flex gap-2">
                                <input className="flex-1 bg-white border border-slate-200 rounded px-2 py-1 text-sm" value={b} onChange={e => {
                                  const n = [...resumeData.projects]; const bts = [...n[idx].bullets]; bts[bIdx] = e.target.value; n[idx] = {...n[idx], bullets: bts}; setResumeData({...resumeData, projects: n});
