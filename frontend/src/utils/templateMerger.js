@@ -395,48 +395,77 @@ function buildAcademicBody(data) {
   return `\n${header}\n\n${sections.join('\n\n')}\n\n\\end{document}`;
 }
 
-/* ── Generic fallback body builder ──────────────────────────────────────── */
-function buildGenericBody(data) {
+/* ── Professional Modern (RenderCV style) body builder ─────────────────── */
+function buildProfessionalBody(data) {
   const p = data.personal || {};
-  const lines = [`\\begin{center}`,
-    `{\\Huge \\textbf{${esc(p.name || 'Your Name')}}}\\\\[4pt]`,
-    [p.email, p.phone, p.location].filter(Boolean).map(esc).join(' | '),
-    p.github   ? `GitHub: ${esc(p.github)}`   : '',
-    p.linkedin ? `LinkedIn: ${esc(p.linkedin)}` : '',
-  ].filter(Boolean);
-  lines.push('\\end{center}', '\\hrule\\vspace{6pt}');
+  const name = esc(p.name || 'Your Name');
+  const phone = esc(p.phone || '');
+  const email = esc(p.email || '');
+  const github = esc(p.github || '');
+  const linkedin = esc(p.linkedin || '');
+  const location = esc(p.location || '');
+  const objective = esc(p.objective || 'Software Developer specializing in full-stack systems.');
 
-  const exp = data.experience || [];
-  if (exp.length) {
-    lines.push('\\section*{Experience}');
-    exp.forEach(e => {
-      const titleText = e.url ? `\\href{${esc(e.url)}}{${esc(e.title || '')}}` : esc(e.title || '');
-      lines.push(`\\textbf{${titleText}} at \\textit{${esc(e.companyOrInst || '')}} \\hfill ${esc(e.date || '')}\\\\`);
-      (e.bullets||[]).filter(Boolean).forEach(b => lines.push(`\\quad • ${esc(b)}\\\\`));
-      lines.push('\\vspace{4pt}');
-    });
-  }
+  const header = `
+    \\begin{header}
+        \\fontsize{20 pt}{20 pt}\\selectfont ${name}
 
+        \\vspace{3 pt}
+
+        \\normalsize
+        \\kern 5.0 pt%
+        \\mbox{\\hrefWithoutArrow{tel:${phone.replace(/\s/g,'')}}{${phone}}}%
+        \\kern 5.0 pt%
+         \\AND%
+        \\kern 5.0 pt%
+\\mbox{\\hrefWithoutArrow{https://${linkedin}}{${linkedin.replace('https://','')}}} %
+        \\kern 5.0 pt%
+        \\AND%
+        \\kern 5.0 pt%
+        \\mbox{\\hrefWithoutArrow{https://${github}}{${github.replace('https://','')}}}%
+        \\kern 5.0 pt%
+         \\AND%
+            \\kern 5.0 pt%
+            ${location}
+    \\end{header}`;
+
+  const sections = [];
+
+  // Objective
+  sections.push(`\\section{Objective}\n    \\vspace{0.2 cm}\n    \\begin{onecolentry}\n        ${objective}\n    \\end{onecolentry}`);
+
+  // Education
   const edu = data.education || [];
   if (edu.length) {
-    lines.push('\\section*{Education}');
-    edu.forEach(e => {
-      lines.push(`\\textbf{${esc(e.title || '')}} — ${esc(e.companyOrInst || '')} \\hfill ${esc(e.date || '')}\\\\`);
-    });
+    const entries = edu.map(e => `    \\begin{twocolentry}{${esc(e.date)}}\n    \\textbf{${esc(e.companyOrInst)}}\\end{twocolentry}\n    \\vspace{0.10 cm}\n    \\begin{onecolentry}\n        \\begin{highlights}\n            \\item ${esc(e.title)}${e.details ? `\n            \\item ${esc(e.details)}` : ''}\n        \\end{highlights}\n    \\end{onecolentry}\n    \\vspace{0.15 cm}`).join('\n');
+    sections.push(`\\section{Education}\n    \\vspace{0.2 cm}\n${entries}`);
   }
 
+  // Skills
+  const rawSkills = data.skills || [];
+  const normalizedSkills = rawSkills.length > 0 && rawSkills[0].category !== undefined
+    ? rawSkills
+    : [{ category: 'Technical Skills', items: rawSkills.map(s => s.text || String(s)) }];
+  if (normalizedSkills.length) {
+    const items = normalizedSkills.map(cat => `            \\item \\textbf{${esc(cat.category)}:} ${(cat.items || []).map(esc).join(', ')}`).join('\n\\vspace{0.02 cm}\n');
+    sections.push(`\\section{Skills}\n    \\vspace{0.05 cm}\n    \\begin{highlightsforbulletentries}\n${items}\n    \\end{highlightsforbulletentries}`);
+  }
+
+  // Projects
   const proj = data.projects || [];
   if (proj.length) {
-    lines.push('\\section*{Projects}');
-    proj.forEach(pr => {
-      const titleText = pr.url ? `\\href{${esc(pr.url)}}{${esc(pr.title || '')}}` : esc(pr.title || '');
-      lines.push(`\\textbf{${titleText}} \\hfill ${esc(pr.date || '')}\\\\`);
-      (pr.bullets||[]).filter(Boolean).forEach(b => lines.push(`\\quad • ${esc(b)}\\\\`));
-    });
+    const entries = proj.map(pr => `    \\begin{twocolentry}{${esc(pr.date)}}\n        \\textbf{${esc(pr.title)}}\n    \\end{twocolentry}\n    \\vspace{0.10 cm}\n    \\begin{onecolentry}\n        \\begin{highlights}\n${(pr.bullets || []).filter(Boolean).map(b => `            \\item ${esc(b)}`).join('\n')}\n        \\end{highlights}\n    \\end{onecolentry}\n    \\vspace{0.15 cm}`).join('\n');
+    sections.push(`\\section{Academic Projects Experience}\n    \\vspace{0.1 cm}\n${entries}`);
   }
 
-  lines.push('\\end{document}');
-  return '\n' + lines.join('\n');
+  // Experience
+  const exp = data.experience || [];
+  if (exp.length) {
+    const entries = exp.map(e => `    \\begin{twocolentry}{${esc(e.date)}}\n        \\textbf{${esc(e.title)}}, ${esc(e.companyOrInst)}\n    \\end{twocolentry}\n    \\vspace{0.10 cm}\n    \\begin{onecolentry}\n        \\begin{highlights}\n${(e.bullets || []).filter(Boolean).map(b => `            \\item ${esc(b)}`).join('\n')}\n        \\end{highlights}\n    \\end{onecolentry}\n    \\vspace{0.15 cm}`).join('\n');
+    sections.push(`\\section{Work Experience}\n    \\vspace{0.1 cm}\n${entries}`);
+  }
+
+  return `\n${header}\n\n\\vspace{5 pt - 0.3 cm}\n\n${sections.join('\n\n')}\n\n\\end{document}`;
 }
 
 /* ── Main export ─────────────────────────────────────────────────────────── */
@@ -469,6 +498,8 @@ export function mergeDataIntoTemplate(templateCode, resumeData, templateType) {
     body = buildMinimalistBody(resumeData);
   } else if (templateType === 'academic') {
     body = buildAcademicBody(resumeData);
+  } else if (templateType === 'professional-modern') {
+    body = buildProfessionalBody(resumeData);
   } else {
     body = buildGenericBody(resumeData);
   }

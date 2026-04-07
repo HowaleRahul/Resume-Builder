@@ -697,6 +697,221 @@ GPA: 3.95/4.0, Summa Cum Laude
 
 \\end{document}`;
 
+// ─── Template 7: Professional Modern — RenderCV Style ────────────────────────
+const TEMPLATE_PROFESSIONAL = `\\documentclass[10pt, letterpaper]{article}
+
+% Packages:
+\\usepackage[
+    ignoreheadfoot,
+    top=1.5 cm,
+    bottom=1.5 cm,
+    left=1.7 cm,
+    right=1.7 cm,
+    footskip=1.0 cm,
+]{geometry}
+\\usepackage{titlesec}
+\\usepackage{tabularx}
+\\usepackage{array}
+\\usepackage[dvipsnames]{xcolor}
+\\definecolor{primaryColor}{RGB}{0, 0, 0}
+\\usepackage{enumitem}
+\\usepackage{fontawesome5}
+\\usepackage{amsmath}
+\\usepackage[
+    pdftitle={{{name}}'s CV},
+    pdfauthor={{{name}}},
+    pdfcreator={LaTeX with CareerFlow AI},
+    colorlinks=true,
+    urlcolor=primaryColor
+]{hyperref}
+\\usepackage[pscoord]{eso-pic}
+\\usepackage{calc}
+\\usepackage{bookmark}
+
+\\usepackage{changepage}
+\\usepackage{paracol}
+\\usepackage{ifthen}
+\\usepackage{needspace}
+\\usepackage{iftex}
+
+% Ensure that generate pdf is machine readable/ATS parsable:
+\\ifPDFTeX
+    \\input{glyphtounicode}
+    \\pdfgentounicode=1
+    \\usepackage[T1]{fontenc}
+    \\usepackage[utf8]{inputenc}
+    \\usepackage{lmodern}
+\\fi
+
+\\usepackage{charter}
+
+% Some settings:
+\\raggedright
+\\AtBeginEnvironment{adjustwidth}{\\partopsep0pt}
+\\pagestyle{empty}
+\\setcounter{secnumdepth}{0}
+\\setlength{\\parindent}{0pt}
+\\setlength{\\topskip}{0pt}
+\\setlength{\\columnsep}{0.15cm}
+\\pagenumbering{gobble}
+
+\\titleformat{\\section}{\\needspace{4\\baselineskip}\\bfseries\\large}{}{0pt}{}[\\vspace{1pt}\\titlerule]
+
+\\titlespacing{\\section}{-1pt}{0.2 cm}{0.1 cm}
+
+\\renewcommand\\labelitemi{$\\vcenter{\\hbox{\\small$\\bullet$}}$}
+\\newenvironment{highlights}{
+    \\begin{itemize}[topsep=0.10 cm, parsep=0.10 cm, partopsep=0pt, itemsep=0pt, leftmargin=0 cm + 10pt]
+}{
+    \\end{itemize}
+}
+
+\\newenvironment{highlightsforbulletentries}{
+    \\begin{itemize}[topsep=0.10 cm, parsep=0.10 cm, partopsep=0pt, itemsep=0pt, leftmargin=10pt]
+}{
+    \\end{itemize}
+}
+
+\\newenvironment{onecolentry}{
+    \\begin{adjustwidth}{0 cm + 0.00001 cm}{0 cm + 0.00001 cm}
+}{
+    \\end{adjustwidth}
+}
+
+\\newenvironment{twocolentry}[2][]{
+    \\onecolentry
+    \\def\\secondColumn{#2}
+    \\setcolumnwidth{\\fill, 4.5 cm}
+    \\begin{paracol}{2}
+}{
+    \\switchcolumn \\raggedleft \\secondColumn
+    \\end{paracol}
+    \\endonecolentry
+}
+
+\\newenvironment{threecolentry}[3][]{
+    \\onecolentry
+    \\def\\thirdColumn{#3}
+    \\setcolumnwidth{, \\fill, 4.5 cm}
+    \\begin{paracol}{3}
+    {\\raggedright #2} \\switchcolumn
+}{
+    \\switchcolumn \\raggedleft \\thirdColumn
+    \\end{paracol}
+    \\endonecolentry
+}
+
+\\newenvironment{header}{
+    \\setlength{\\topsep}{0pt}\\par\\kern\\topsep\\centering\\linespread{1.5}
+}{
+    \\par\\kern\\topsep
+}
+
+\\let\\hrefWithoutArrow\\href
+
+\\begin{document}
+    \\newcommand{\\AND}{\\unskip
+        \\cleaders\\copy\\ANDbox\\hskip\\wd\\ANDbox
+        \\ignorespaces
+    }
+    \\newsavebox\\ANDbox
+    \\sbox\\ANDbox{$|$}
+
+    \\begin{header}
+        \\fontsize{20 pt}{20 pt}\\selectfont {{name}}
+
+        \\vspace{3 pt}
+
+        \\normalsize
+        \\kern 5.0 pt%
+        \\mbox{\\hrefWithoutArrow{tel:{{phone}}}{{{phone}}}}%
+        \\kern 5.0 pt%
+         \\AND%
+        \\kern 5.0 pt%
+\\mbox{\\hrefWithoutArrow{https://{{linkedin}}}{{{linkedin}}}} %
+        \\kern 5.0 pt%
+        \\AND%
+        \\kern 5.0 pt%
+        \\mbox{\\hrefWithoutArrow{https://{{github}}}{{{github}}}}%
+        \\kern 5.0 pt%
+         \\AND%
+            \\kern 5.0 pt%
+            {{{location}}}
+    \\end{header}
+
+    \\vspace{5 pt - 0.3 cm}
+
+    % ----- Objective -----
+    \\section{Objective}
+        \\vspace{0.2 cm}
+        \\begin{onecolentry}
+            {{objective}}
+        \\end{onecolentry}
+
+    % ----- Education -----
+    \\section{Education}
+        \\vspace{0.2 cm}
+        {{#education}}
+        \\begin{twocolentry}{{{date}}}
+        \\textbf{{{{companyOrInst}}}}\\end{twocolentry}
+        \\vspace{0.10 cm}
+        \\begin{onecolentry}
+            \\begin{highlights}
+                \\item {{{title}}}
+                {{#details}}\\item {{{details}}}{{/details}}
+            \\end{highlights}
+        \\end{onecolentry}
+        \\vspace{0.15 cm}
+        {{/education}}
+
+    % ----- Skills -----
+    \\section{Skills}
+        \\vspace{0.05 cm}
+        \\begin{highlightsforbulletentries}
+            {{#skills}}
+            \\item \\textbf{{{category}}:} {{#items}}{{.}}{{^-last}}, {{/-last}}{{/items}}
+            \\vspace{0.02 cm}
+            {{/skills}}
+        \\end{highlightsforbulletentries}
+
+    % ----- Projects -----
+    \\section{Academic Projects Experience}
+        \\vspace{0.1 cm}
+        {{#projects}}
+        \\begin{twocolentry}{{{date}}}
+            \\textbf{{{{title}}}}
+        \\end{twocolentry}
+        \\vspace{0.10 cm}
+        \\begin{onecolentry}
+            \\begin{highlights}
+                {{#bullets}}
+                \\item {{{.}}}
+                {{/bullets}}
+            \\end{highlights}
+        \\end{onecolentry}
+        \\vspace{0.15 cm}
+        {{/projects}}
+
+    % ----- Experience -----
+    \\section{Work Experience}
+        \\vspace{0.1 cm}
+        {{#experience}}
+        \\begin{twocolentry}{{{date}}}
+            \\textbf{{{{title}}}}, {{{companyOrInst}}}
+        \\end{twocolentry}
+        \\vspace{0.10 cm}
+        \\begin{onecolentry}
+            \\begin{highlights}
+                {{#bullets}}
+                \\item {{{.}}}
+                {{/bullets}}
+            \\end{highlights}
+        \\end{onecolentry}
+        \\vspace{0.15 cm}
+        {{/experience}}
+
+\\end{document}`;
+
 // ─── Registry ─────────────────────────────────────────────────────────────────
 export const TEMPLATE_REGISTRY = {
   'jitin-nair': {
@@ -758,6 +973,16 @@ export const TEMPLATE_REGISTRY = {
     compat: 'online',
     desc: 'Long-form CV for academic and research positions with publications.',
     code: TEMPLATE_ACADEMIC,
+  },
+  'professional-modern': {
+    label: 'Professional Modern',
+    author: 'Community',
+    tag: 'New & Premium',
+    tagColor: 'indigo',
+    color: 'from-indigo-50 to-blue-50',
+    compat: 'overleaf',
+    desc: 'Highly structured, ATS-optimized RenderCV style for experienced pros.',
+    code: TEMPLATE_PROFESSIONAL,
   },
 };
 

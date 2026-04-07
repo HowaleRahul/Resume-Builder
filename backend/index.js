@@ -8,6 +8,8 @@ const logger = require('./src/utils/logger');
 const requestLogger = require('./src/middleware/requestLogger');
 const resumeRoutes = require('./src/routes/resumeRoutes');
 const aiRoutes = require('./src/routes/aiRoutes');
+const jobRoutes = require('./src/routes/jobRoutes');
+const userRoutes = require('./src/routes/userRoutes');
 
 const app = express();
 app.use(cors());
@@ -26,6 +28,7 @@ if (process.env.MONGO_URI) {
 // Routes
 app.use('/api/resume', resumeRoutes);
 app.use('/api/ai', aiRoutes);
+app.use('/api/jobs', jobRoutes);
 
 // Health check
 app.get('/health', (req, res) => {
