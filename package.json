@@ -1,15 +1,19 @@
 {
   "name": "careerflow-ai",
-  "dependencies": {
-    "@clerk/clerk-react": "^5.61.4",
-    "@hello-pangea/dnd": "^18.0.1",
-    "@tailwindcss/vite": "^4.2.2",
-    "axios": "^1.14.0",
-    "framer-motion": "^12.38.0",
-    "lucide-react": "^1.7.0",
-
-    "react-router-dom": "^7.14.0",
-    "tailwindcss": "^4.2.2",
-    "zustand": "^5.0.12"
-  }
+  "version": "1.0.0",
+  "description": "Full-stack resume builder with AI",
+  "private": true,
+  "scripts": {
+    "build": "npm --prefix frontend run build && npm --prefix backend run build || true",
+    "dev": "concurrently \"npm --prefix frontend run dev\" \"npm --prefix backend run dev\"",
+    "install": "npm install --prefix frontend && npm install --prefix backend"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "workspaces": [
+    "frontend",
+    "backend"
+  ]
 }
+
