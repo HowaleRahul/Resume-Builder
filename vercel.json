@@ -1,8 +1,4 @@
 {
-  "projectSettings": {
-    "sourceFilesOutsideRootDirectory": true
-  },
-  
   "experimentalServices": {
     "frontend": {
       "entrypoint": "frontend",
@@ -48,6 +44,36 @@
       "headers": [
         {
           "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        }
+      ]
+    },
+    {
+      "source": "/api/:path*",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        }
+      ]
+    }
+  ],
+
+  "cleanUrls": true,
+  "trailingSlash": false
+}
           "value": "nosniff"
         },
         {
