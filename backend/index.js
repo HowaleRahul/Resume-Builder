@@ -4,6 +4,7 @@ const helmet = require('helmet');
 const compression = require('compression');
 const rateLimit = require('express-rate-limit');
 const mongoose = require('mongoose');
+const cors = require('cors');
 const connectDB = require('./src/config/db');
 const logger = require('./src/utils/logger');
 const requestLogger = require('./src/middleware/requestLogger');
@@ -70,19 +71,24 @@ app.get('/health', (req, res) => {
 });
 
 const PORT = process.env.PORT || 5000;
-const server = app.listen(PORT, () => {
-  logger.info(`Server running on port ${PORT}`, { port: PORT, env: process.env.NODE_ENV || 'development' });
-  console.log(`✅ Server is listening on http://localhost:${PORT}`);
-}).on('error', (err) => {
-  if (err.code === 'EADDRINUSE') {
-    logger.error(`Port ${PORT} is already in use. Please close the other process or change the PORT in .env.`);
-  } else {
-    logger.error('Server failed to start', { error: err.message });
-  }
-  process.exit(1);
-});
+
+if (process.env.NODE_ENV !== 'production') {
+  const server = app.listen(PORT, () => {
+    logger.info(`Server running on port ${PORT}`, { port: PORT, env: process.env.NODE_ENV || 'development' });
+    console.log(`✅ Server is listening on http://localhost:${PORT}`);
+  }).on('error', (err) => {
+    if (err.code === 'EADDRINUSE') {
+      logger.error(`Port ${PORT} is already in use. Please close the other process or change the PORT in .env.`);
+    } else {
+      logger.error('Server failed to start', { error: err.message });
+    }
+    process.exit(1);
+  });
+}
 
 // Handle unhandled rejections
 process.on('unhandledRejection', (reason, promise) => {
   logger.error('Unhandled Rejection at:', { promise, reason: reason.stack || reason });
 });
+
+module.exports = app;
