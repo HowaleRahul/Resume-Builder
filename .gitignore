@@ -18,6 +18,7 @@ pnpm-lock.yaml
 .env.test
 .env.production
 .env.*.key
+!.env.example  # Commit this - it's the template
 
 # ============================================
 # BUILD & DISTRIBUTION OUTPUTS
@@ -31,7 +32,9 @@ build/
 # LOGS & DEBUG FILES
 # ============================================
 logs/
-logs/*.log
+logs/**/*.log
+logs/**/*.zip
+logs/**/*-audit.json
 *.log
 npm-debug.log*
 yarn-debug.log*
