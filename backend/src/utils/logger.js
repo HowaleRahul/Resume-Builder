@@ -55,8 +55,10 @@ const logger = createLogger({
   levels: customLevels.levels,                              // register custom levels
   level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
   transports: [
-    infoRotateTransport,
-    errorRotateTransport,
+    ...(process.env.NODE_ENV !== 'production' ? [
+      infoRotateTransport,
+      errorRotateTransport,
+    ] : []),
     new transports.Console({
       format: combine(
         colorize({ all: true }),
@@ -68,20 +70,24 @@ const logger = createLogger({
     }),
   ],
   exceptionHandlers: [
+...(process.env.NODE_ENV !== 'production' ? [
     new DailyRotateFile({
       filename: path.join(logsDir, 'exceptions-%DATE%.log'),
       datePattern: 'YYYY-MM-DD',
       maxFiles: '30d',
       format: fileFormat,
-    }),
+    })
+] : []),
   ],
   rejectionHandlers: [
+...(process.env.NODE_ENV !== 'production' ? [
     new DailyRotateFile({
       filename: path.join(logsDir, 'rejections-%DATE%.log'),
       datePattern: 'YYYY-MM-DD',
       maxFiles: '30d',
       format: fileFormat,
-    }),
+    })
+] : []),
   ],
   exitOnError: false,
 });
