@@ -39,7 +39,15 @@ export default function Builder() {
             }
           }
         })
-        .catch(err => console.error("Failed to load resume", err))
+        .catch(err => {
+          console.error("Failed to load resume:", {
+            message: err.message,
+            status: err.response?.status,
+            data: err.response?.data,
+            url: err.config?.url
+          });
+          toast.error(`Failed to load resume: ${err.response?.data?.message || err.message}`);
+        })
         .finally(() => state.setLoading(false));
     } else if (template && TEMPLATE_REGISTRY[template]) {
       state.setTemplateType(template);

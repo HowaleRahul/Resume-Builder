@@ -20,18 +20,10 @@ pnpm-lock.yaml
 .env.*.key
 
 # ============================================
-# BUILD & DISTRIBUTION OUTPUTS
-# ============================================
-dist/
-dist-ssr/
-build/
-*.tsbuildinfo
-
-# ============================================
 # LOGS & DEBUG FILES
 # ============================================
 logs/
-logs/*.log
+logs/**/*.log
 *.log
 npm-debug.log*
 yarn-debug.log*
@@ -44,27 +36,31 @@ lerna-debug.log*
 # ============================================
 .vscode/
 .idea/
+.editorconfig
 *.swp
 *.swo
 *.swx
-*.sublime-*
-.project
-.classpath
+*.sublime-project
+*.sublime-workspace
+*.tmlanguage.cache
+*.tmPreferences.cache
+*.tmTheme.cache
 *.c9/
 *.iml
-*.sublime-workspace
-.DS_Store
-.AppleDouble
-.LSOverride
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
 
 # ============================================
 # OS & SYSTEM FILES
 # ============================================
 .DS_Store
+.AppleDouble
+.LSOverride
 Thumbs.db
 thumbs.db
 *.pem
-.env.*.pem
 
 # ============================================
 # TESTING & COVERAGE
@@ -74,39 +70,45 @@ coverage/
 *.lcov
 
 # ============================================
-# IDE CACHE
+# TEMPORARY & CACHE FILES
 # ============================================
-*.tmlanguage.cache
-*.tmPreferences.cache
-*.tmTheme.cache
+.cache/
+*.tmp
+*.temp
+tmp/
+temp/
+
+# ============================================
+# DATABASE FILES (LOCAL DEVELOPMENT)
+# ============================================
+*.db
+*.sqlite
+*.sqlite3
+dump.rdb
+
+# ============================================
+# NODE & NPM
+# ============================================
+.npm/
+.eslintcache
 
 # ============================================
 # VERCEL & DEPLOYMENT
 # ============================================
 .vercel
 .vercel_build_output
-.next/
-out/
 
 # ============================================
-# TEMPORARY FILES
+# API KEYS & CREDENTIALS (SECURITY)
 # ============================================
-*.tmp
-*.temp
-.cache/
-tmp/
-temp/
+*.key
+*.pem
+credentials.json
 
 # ============================================
-# DATABASE
+# UPLOADS & TEMPORARY FILES
 # ============================================
-*.db
-*.sqlite
-*.sqlite3
-
-# ============================================
-# MACOS FILES
-# ============================================
-**/._*
-.AppleDouble
-.LSOverride
+uploads/
+temp_uploads/
+*.pdf
+*.tex

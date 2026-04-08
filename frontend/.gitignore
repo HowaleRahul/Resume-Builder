@@ -1,5 +1,35 @@
-# Logs
-logs
+# ============================================
+# DEPENDENCIES & PACKAGES
+# ============================================
+node_modules/
+.pnp
+.pnp.js
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# ============================================
+# ENVIRONMENT VARIABLES (SENSITIVE)
+# ============================================
+.env
+.env.local
+.env.*.local
+.env.development
+.env.test
+.env.production
+.env.*.key
+
+# ============================================
+# VITE BUILD OUTPUT
+# ============================================
+dist/
+dist-ssr/
+*.local
+
+# ============================================
+# LOGS & DEBUG FILES
+# ============================================
+logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
@@ -7,18 +37,62 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
-
-# Editor directories and files
+# ============================================
+# IDE & EDITOR SETTINGS
+# ============================================
 .vscode/*
 !.vscode/extensions.json
-.idea
+.idea/
+.editorconfig
+*.swp
+*.swo
+*.swx
+*.sublime-project
+*.sublime-workspace
+*.tmlanguage.cache
+*.tmPreferences.cache
+*.tmTheme.cache
+*.c9/
+*.iml
+
+# ============================================
+# OS & SYSTEM FILES
+# ============================================
 .DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+.AppleDouble
+.LSOverride
+Thumbs.db
+thumbs.db
+*.pem
+
+# ============================================
+# TESTING & COVERAGE
+# ============================================
+coverage/
+.nyc_output/
+*.lcov
+
+# ============================================
+# BUILD & COMPILATION
+# ============================================
+*.tsbuildinfo
+
+# ============================================
+# TEMPORARY & CACHE FILES
+# ============================================
+.cache/
+*.tmp
+*.temp
+tmp/
+temp/
+
+# ============================================
+# NODE & NPM
+# ============================================
+.npm/
+.eslintcache
+
+# ============================================
+# VERCEL & DEPLOYMENT
+# ============================================
+.vercel
