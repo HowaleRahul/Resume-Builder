@@ -76,39 +76,44 @@ export default function ExperienceEditor({
                           </button>
                         </div>
                         <div className="space-y-2 w-[95%]">
-                          {exp.bullets && exp.bullets.map((bullet, bIdx) => (
-                             <div key={bIdx} className="flex gap-2">
-                               <textarea 
-                                 className="flex-1 bg-white border border-slate-200 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none min-h-10"
-                                 value={bullet}
-                                 onChange={e => {
+                          {exp.bullets && exp.bullets.map((bullet, bIdx) => {
+                            const isProcessing = loadingStates?.enhancingBullet === `${idx}-${bIdx}`;
+                            return (
+                               <div key={bIdx} className="flex gap-2 group/bullet">
+                                 <div className="flex-1 relative">
+                                   <textarea 
+                                     className="w-full bg-white border border-slate-200 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none min-h-10 pr-10"
+                                     value={bullet}
+                                     onChange={e => {
+                                        const newBullets = [...exp.bullets];
+                                        newBullets[bIdx] = e.target.value;
+                                        onUpdateRole(idx, 'bullets', newBullets);
+                                     }}
+                                   />
+                                   <button 
+                                     onClick={() => onEnhance(idx, bIdx, bullet)}
+                                     disabled={isProcessing}
+                                     className={`absolute right-2 top-2 p-1.5 rounded-md transition ${isProcessing ? 'text-purple-600 bg-purple-50' : 'text-slate-300 hover:text-purple-600 hover:bg-purple-50 opacity-0 group-hover/bullet:opacity-100'}`}
+                                     title="Enhance with AI"
+                                   >
+                                     {isProcessing ? <div className="w-3.5 h-3.5 border-2 border-purple-600 border-t-transparent rounded-full animate-spin" /> : <Sparkles size={14} />}
+                                   </button>
+                                 </div>
+                                 <button onClick={() => {
                                     const newBullets = [...exp.bullets];
-                                    newBullets[bIdx] = e.target.value;
+                                    newBullets.splice(bIdx, 1);
                                     onUpdateRole(idx, 'bullets', newBullets);
-                                 }}
-                               />
-                               <button onClick={() => {
-                                  const newBullets = [...exp.bullets];
-                                  newBullets.splice(bIdx, 1);
-                                  onUpdateRole(idx, 'bullets', newBullets);
-                               }} className="text-slate-400 hover:text-red-500">
-                                 <Trash2 size={14} />
-                               </button>
-                             </div>
-                          ))}
+                                 }} className="text-slate-400 hover:text-red-500 self-start mt-2">
+                                   <Trash2 size={14} />
+                                 </button>
+                               </div>
+                            );
+                          })}
                           {(!exp.bullets || exp.bullets.length === 0) && (
                              <p className="text-xs text-slate-400 italic">No bullets added yet.</p>
                           )}
                         </div>
                       </div>
-                      <button 
-                        onClick={() => onEnhance(idx, exp.bullets?.[0] || "")} 
-                        disabled={loading} 
-                        className="flex items-center text-xs font-bold text-purple-600 bg-purple-50 hover:bg-purple-100 px-3 py-1.5 rounded transition"
-                      >
-                        <Sparkles size={14} className="mr-1" />
-                        {loading ? 'Enhancing...' : 'Enhance with AI'}
-                      </button>
                     </div>
                   )}
                 </Draggable>

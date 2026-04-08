@@ -40,3 +40,34 @@
 {"env":"development","level":"info","message":"Server running on port 5000","port":"5000","timestamp":"2026-04-07 16:33:43.287"}
 {"level":"info","message":"MongoDB connected successfully","timestamp":"2026-04-07 16:33:43.317"}
 {"durationMs":1,"ip":"::1","level":"warn","message":"POST /api/users/sync → 404 (1ms)","method":"POST","statusCode":404,"timestamp":"2026-04-07 16:38:45.192","url":"/api/users/sync","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0"}
+{"env":"development","level":"info","message":"Server running on port 5000","port":"5000","timestamp":"2026-04-07 16:45:34.697"}
+{"level":"info","message":"MongoDB connected successfully","timestamp":"2026-04-07 16:45:34.735"}
+{"env":"development","level":"info","message":"Server running on port 5000","port":"5000","timestamp":"2026-04-07 16:45:42.323"}
+{"level":"info","message":"MongoDB connected successfully","timestamp":"2026-04-07 16:45:42.347"}
+{"env":"development","level":"info","message":"Server running on port 5000","port":"5000","timestamp":"2026-04-07 16:45:50.881"}
+{"level":"info","message":"MongoDB connected successfully","timestamp":"2026-04-07 16:45:50.900"}
+{"env":"development","level":"info","message":"Server running on port 5000","port":"5000","timestamp":"2026-04-07 16:46:04.837"}
+{"level":"info","message":"MongoDB connected successfully","timestamp":"2026-04-07 16:46:04.856"}
+{"env":"development","level":"info","message":"Server running on port 5000","port":"5000","timestamp":"2026-04-07 16:46:21.821"}
+{"level":"info","message":"MongoDB connected successfully","timestamp":"2026-04-07 16:46:21.844"}
+{"level":"info","message":"MongoDB connected successfully: 127.0.0.1","timestamp":"2026-04-07 16:52:55.098"}
+{"level":"info","message":"MongoDB connected successfully: 127.0.0.1","timestamp":"2026-04-07 16:53:13.994"}
+{"level":"info","message":"MongoDB connected successfully: 127.0.0.1","timestamp":"2026-04-07 17:07:23.843"}
+{"level":"info","message":"MongoDB connected successfully: 127.0.0.1","timestamp":"2026-04-07 17:07:33.173"}
+{"level":"info","message":"MongoDB connected successfully: 127.0.0.1","timestamp":"2026-04-07 17:07:44.913"}
+{"level":"info","message":"MongoDB connected successfully: 127.0.0.1","timestamp":"2026-04-07 17:07:52.738"}
+{"level":"info","message":"MongoDB connected successfully: 127.0.0.1","timestamp":"2026-04-07 17:09:18.954"}
+{"level":"info","message":"MongoDB connected successfully: 127.0.0.1","timestamp":"2026-04-07 17:15:45.381"}
+{"level":"info","message":"MongoDB connected successfully: 127.0.0.1","timestamp":"2026-04-07 17:15:45.392"}
+{"level":"info","message":"MongoDB connected successfully: 127.0.0.1","timestamp":"2026-04-07 17:29:59.850"}
+{"level":"info","message":"MongoDB connected successfully: 127.0.0.1","timestamp":"2026-04-07 17:29:59.851"}
+{"level":"info","message":"MongoDB connected successfully: 127.0.0.1","timestamp":"2026-04-07 17:30:19.482"}
+{"level":"info","message":"MongoDB connected successfully: 127.0.0.1","timestamp":"2026-04-07 17:30:19.491"}
+{"level":"info","message":"MongoDB connected successfully: 127.0.0.1","timestamp":"2026-04-07 17:33:38.954"}
+{"level":"info","message":"MongoDB connected successfully: 127.0.0.1","timestamp":"2026-04-07 17:33:38.957"}
+{"level":"info","message":"MongoDB connected successfully: 127.0.0.1","timestamp":"2026-04-07 17:33:45.533"}
+{"level":"info","message":"MongoDB connected successfully: 127.0.0.1","timestamp":"2026-04-07 17:33:45.539"}
+{"level":"info","message":"MongoDB connected successfully: 127.0.0.1","timestamp":"2026-04-07 17:33:53.322"}
+{"level":"info","message":"MongoDB connected successfully: 127.0.0.1","timestamp":"2026-04-07 17:33:53.322"}
+{"level":"info","message":"MongoDB connected successfully: 127.0.0.1","timestamp":"2026-04-07 17:34:27.455"}
+{"level":"info","message":"MongoDB connected successfully: 127.0.0.1","timestamp":"2026-04-07 17:34:27.460"}

@@ -5,35 +5,19 @@ import { Link } from 'react-router-dom';
 import { 
   FileText, 
   Plus, 
-  LayoutTemplate, 
-  Star, 
-  Settings, 
-  BriefcaseBusiness, 
-  ArrowRightLeft, 
   Search, 
-  LayoutDashboard,
-  Zap,
-  Clock,
-  Sparkles,
-  ChevronRight
 } from 'lucide-react';
 import { TEMPLATE_REGISTRY } from '../templates';
 import JobTracker from '../components/dashboard/JobTracker';
-
-const TAG_COLORS = {
-  blue:    'bg-blue-100 text-blue-700',
-  rose:    'bg-rose-100 text-rose-700',
-  emerald: 'bg-emerald-100 text-emerald-700',
-  violet:  'bg-violet-100 text-violet-700',
-  slate:   'bg-slate-200 text-slate-600',
-  amber:   'bg-amber-100 text-amber-700',
-};
+import Sidebar from '../components/dashboard/Sidebar';
+import ResumeCard from '../components/dashboard/ResumeCard';
+import TemplateCard from '../components/dashboard/TemplateCard';
 
 export default function Dashboard() {
   const { user } = useUser();
   const [resumes, setResumes] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [activeSubTab, setActiveSubTab] = useState('resumes'); // 'resumes' | 'jobs' | 'comparison' | 'templates'
+  const [activeSubTab, setActiveSubTab] = useState('resumes'); // 'resumes' | 'jobs' | 'templates'
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
@@ -46,48 +30,12 @@ export default function Dashboard() {
   }, [user]);
 
   const templates = Object.entries(TEMPLATE_REGISTRY);
-  const filteredResumes = resumes.filter(r => r.title.toLowerCase().includes(searchQuery.toLowerCase()));
+  const filteredResumes = resumes.filter(r => (r.title || '').toLowerCase().includes(searchQuery.toLowerCase()));
 
   return (
     <div className="flex h-[calc(100vh-64px)] overflow-hidden bg-slate-50">
       
-      {/* ── Sidebar Navigation ─────────────────────────────────────────── */}
-      <aside className="w-64 border-r border-slate-200 bg-white flex flex-col shrink-0">
-        <div className="p-6">
-          <div className="flex items-center space-x-3 mb-10 px-2">
-            <div className="w-10 h-10 rounded-xl bg-linear-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white font-black text-2xl shadow-lg ring-4 ring-blue-50">
-              C
-            </div>
-            <span className="text-xl font-black text-slate-900 tracking-tighter">CareerFlow AI</span>
-          </div>
-
-          <div className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">Core Suite</div>
-          <nav className="space-y-1">
-            <SidebarLink icon={<LayoutDashboard size={18}/>} label="My Resumes" active={activeSubTab === 'resumes'} onClick={() => setActiveSubTab('resumes')} />
-            <SidebarLink icon={<BriefcaseBusiness size={18}/>} label="Job Tracker" active={activeSubTab === 'jobs'} onClick={() => setActiveSubTab('jobs')} tag="PRO" />
-            <SidebarLink icon={<LayoutTemplate size={18}/>} label="Templates" active={activeSubTab === 'templates'} onClick={() => setActiveSubTab('templates')} />
-          </nav>
-
-          <div className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mt-8 mb-4">Quick Tools</div>
-          <nav className="space-y-1">
-            <Link to="/compare" className="flex items-center space-x-3 px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-50 rounded-lg transition">
-              <ArrowRightLeft size={18} /> <span>Head-to-Head</span>
-            </Link>
-            <SidebarLink icon={<Settings size={18}/>} label="Settings" active={activeSubTab === 'settings'} onClick={() => setActiveSubTab('settings')} />
-          </nav>
-        </div>
-
-        <div className="mt-auto p-4">
-          <div className="bg-slate-900 rounded-2xl p-4 text-white relative overflow-hidden group">
-            <div className="absolute -top-4 -right-4 w-16 h-16 bg-blue-500 rounded-full blur-2xl opacity-40 group-hover:scale-150 transition-transform duration-500" />
-            <div className="relative">
-              <div className="text-xs font-bold text-blue-400 mb-1">PRO PLAN</div>
-              <p className="text-[10px] text-slate-400 mb-3 leading-relaxed">Unlock advanced AI tailoring & unlimited cloud storage.</p>
-              <button className="w-full py-1.5 bg-blue-600 hover:bg-blue-500 rounded-lg text-[10px] font-black uppercase transition-colors">Upgrade Now</button>
-            </div>
-          </div>
-        </div>
-      </aside>
+      <Sidebar activeSubTab={activeSubTab} setActiveSubTab={setActiveSubTab} />
 
       {/* ── Main Content Area ─────────────────────────────────────────── */}
       <main className="flex-1 flex flex-col min-w-0 overflow-hidden relative">
@@ -109,7 +57,6 @@ export default function Dashboard() {
           <div className="flex items-center space-x-4">
             <div className="text-right mr-2 hidden sm:block">
               <div className="text-sm font-bold text-slate-900">{user?.fullName}</div>
-              <div className="text-[10px] font-medium text-slate-400">Free Tier</div>
             </div>
             <UserButton afterSignOutUrl="/" />
           </div>
@@ -183,88 +130,6 @@ export default function Dashboard() {
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
       `}</style>
-    </div>
-  );
-}
-
-function SidebarLink({ icon, label, active, onClick, tag }) {
-  return (
-    <button 
-      onClick={onClick}
-      className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl transition duration-200 group ${active ? 'bg-slate-900 text-white shadow-lg shadow-slate-200' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'}`}
-    >
-      <div className="flex items-center space-x-3 text-sm font-bold">
-        {icon}
-        <span>{label}</span>
-      </div>
-      {tag && (
-        <span className={`text-[9px] font-black px-1.5 py-0.5 rounded ${active ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-400 group-hover:bg-blue-50 group-hover:text-blue-600'}`}>{tag}</span>
-      )}
-    </button>
-  );
-}
-
-function ResumeCard({ resume }) {
-  return (
-    <Link to={`/builder?id=${resume._id}`} className="bg-white rounded-3xl border border-slate-200 overflow-hidden hover:shadow-2xl hover:shadow-blue-200/40 transition-all duration-300 group flex flex-col relative">
-      <div className="h-40 bg-slate-100 flex items-center justify-center border-b border-slate-50 relative overflow-hidden">
-        <FileText size={48} className="text-slate-300 group-hover:scale-110 transition-transform duration-500" />
-        <div className="absolute inset-0 bg-linear-to-tr from-blue-600/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-        
-        {resume.atsScore && (
-          <div className="absolute top-4 right-4 bg-white/90 backdrop-blur border border-slate-100 px-3 py-1.5 rounded-xl shadow-sm flex items-center space-x-1.5">
-            <Zap size={12} className="text-amber-500 fill-current" />
-            <span className="text-xs font-black text-slate-800">{resume.atsScore} Score</span>
-          </div>
-        )}
-      </div>
-      <div className="p-6 flex-1 flex flex-col">
-        <div className="mb-4">
-          <h3 className="font-black text-slate-900 text-lg leading-tight truncate">{resume.title}</h3>
-          <div className="flex items-center text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">
-            <Sparkles size={10} className="mr-1.5 text-blue-500" /> {resume.templateType} Engine
-          </div>
-        </div>
-        <div className="mt-auto pt-4 border-t border-slate-50 flex items-center justify-between">
-          <div className="flex items-center text-[11px] text-slate-400 font-bold">
-            <Clock size={12} className="mr-1.5" /> 
-            {new Date(resume.updatedAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
-          </div>
-          <div className="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-300 group-hover:bg-blue-600 group-hover:text-white transition-colors duration-300">
-            <ChevronRight size={18} />
-          </div>
-        </div>
-      </div>
-    </Link>
-  );
-}
-
-function TemplateCard({ tpl, tKey }) {
-  return (
-    <div className="bg-white rounded-3xl border border-slate-200 overflow-hidden hover:shadow-2xl hover:shadow-indigo-200/40 transition-all duration-300 group">
-      <div className={`h-40 bg-linear-to-br ${tpl.color} relative p-6 flex flex-col justify-between overflow-hidden`}>
-        <div className="absolute -bottom-4 -left-4 w-32 h-32 bg-white/10 rounded-full blur-xl" />
-        <div className={`self-end px-3 py-1 rounded-full text-[10px] font-black tracking-widest uppercase shadow-sm ${TAG_COLORS[tpl.tagColor] || TAG_COLORS.slate}`}>
-          {tpl.tag}
-        </div>
-        <div className="space-y-2 relative">
-          <div className="w-24 h-2 bg-white/30 rounded" />
-          <div className="w-full h-1.5 bg-white/20 rounded" />
-          <div className="w-5/6 h-1.5 bg-white/20 rounded" />
-        </div>
-      </div>
-
-      <div className="p-6">
-        <h3 className="text-lg font-black text-slate-900 mb-1">{tpl.label}</h3>
-        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">by {tpl.author}</p>
-        <p className="text-sm text-slate-500 mb-6 leading-relaxed font-medium line-clamp-2 h-10">{tpl.desc}</p>
-        <Link
-          to={`/builder?template=${tKey}`}
-          className="block text-center w-full bg-slate-900 text-white hover:bg-slate-700 font-black py-3 rounded-xl transition text-xs tracking-widest uppercase shadow-lg shadow-slate-200"
-        >
-          Use Template
-        </Link>
-      </div>
     </div>
   );
 }

@@ -183,7 +183,7 @@ export default function JobTracker() {
       {showAddModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={() => setShowAddModal(false)} />
-          <div className="relative bg-white rounded-[2rem] w-full max-w-lg shadow-2xl p-8 overflow-hidden animate-slide-up">
+          <div className="relative bg-white rounded-4xl w-full max-w-lg shadow-2xl p-8 overflow-hidden animate-slide-up">
             <h3 className="text-2xl font-black text-slate-900 mb-6">Track Application</h3>
             <form onSubmit={handleAddJob} className="space-y-4">
               <div className="grid grid-cols-2 gap-4">

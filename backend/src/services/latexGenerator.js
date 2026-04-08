@@ -28,11 +28,16 @@ function generateLatex(json, template = 'moderncv') {
 
   latex += `\n\\begin{document}\n\\makecvtitle\n\n`;
 
+  // Summary
+  if (json.summary) {
+    latex += `\\section{Summary}\n${escapeLatex(json.summary)}\n\n`;
+  }
+
   // Education
   if (json.education && json.education.length > 0) {
     latex += `\\section{Education}\n`;
     json.education.forEach(edu => {
-      latex += `\\cventry{${escapeLatex(edu.date || '')}}{${escapeLatex(edu.title || '')}}{${escapeLatex(edu.companyOrInst || '')}}{${escapeLatex(edu.location || '')}}{${escapeLatex(edu.details || '')}}{${escapeLatex(edu.description || '')}}\n`;
+      latex += `\\cventry{${escapeLatex(edu.date || '')}}{${escapeLatex(edu.title || '')}}{${escapeLatex(edu.companyOrInst || '')}}{${escapeLatex(edu.location || '')}}{${escapeLatex(edu.details || '')}}{}\n`;
     });
     latex += `\n`;
   }
@@ -61,15 +66,13 @@ function generateLatex(json, template = 'moderncv') {
   if (json.projects && json.projects.length > 0) {
     latex += `\\section{Projects}\n`;
     json.projects.forEach(proj => {
-      latex += `\\cventry{${escapeLatex(proj.date || '')}}{${escapeLatex(proj.title || '')}}{${escapeLatex(proj.companyOrInst || '')}}{${escapeLatex(proj.location || '')}}{${escapeLatex(proj.details || '')}}{`;
+      latex += `\\cventry{}{${escapeLatex(proj.title || '')}}{${escapeLatex(proj.techStack || '')}}{}{}{`;
       if (proj.bullets && proj.bullets.length > 0) {
          latex += `\\begin{itemize} `;
          proj.bullets.forEach(b => {
            if (b.trim()) latex += `\\item ${escapeLatex(b.trim())} `;
          });
          latex += `\\end{itemize}`;
-      } else if (proj.description) {
-         latex += `${escapeLatex(proj.description)}`;
       }
       latex += `}\n`;
     });
@@ -79,8 +82,12 @@ function generateLatex(json, template = 'moderncv') {
   // Skills
   if (json.skills && json.skills.length > 0) {
     latex += `\\section{Skills}\n`;
-    const skillList = json.skills.map(s => escapeLatex(s.text)).join(', ');
-    latex += `\\cvitem{}{${skillList}}\n`;
+    json.skills.forEach(skillCat => {
+        const items = (skillCat.items || []).join(', ');
+        if (items) {
+            latex += `\\cvitem{${escapeLatex(skillCat.category)}}{${escapeLatex(items)}}\n`;
+        }
+    });
     latex += `\n`;
   }
 
