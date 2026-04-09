@@ -1,40 +1,28 @@
 {
-  "experimentalServices": {
-    "frontend": {
-      "entrypoint": "frontend",
-      "routePrefix": "/",
-      "framework": "vite"
-    },
-    "backend": {
-      "entrypoint": "backend",
-      "routePrefix": "/_/backend"
+  "version": 2,
+  "builds": [
+    {
+      "src": "backend/index.js",
+      "use": "@vercel/node"
     }
-  },
-
-  "buildCommand": "npm run build --workspaces",
+  ],
+  "buildCommand": "npm run build",
   "outputDirectory": "frontend/dist",
-
   "env": {
     "NODE_ENV": "production",
     "LOG_LEVEL": "error",
     "ENABLE_FILE_LOGGING": "false"
   },
-
   "rewrites": [
     {
-      "source": "/:path((?!_/backend|_next/static|_next/image|favicon.ico).*)",
+      "source": "/api/(.*)",
+      "destination": "/backend/index.js"
+    },
+    {
+      "source": "/(.*)",
       "destination": "/index.html"
     }
   ],
-
-  "redirects": [
-    {
-      "source": "/api/:path*",
-      "destination": "/_/backend/api/:path*",
-      "permanent": false
-    }
-  ],
-
   "headers": [
     {
       "source": "/(.*)",
@@ -58,7 +46,7 @@
       ]
     },
     {
-      "source": "/api/:path*",
+      "source": "/api/(.*)",
       "headers": [
         {
           "key": "Cache-Control",
@@ -67,7 +55,6 @@
       ]
     }
   ],
-
   "cleanUrls": true,
   "trailingSlash": false
 }
