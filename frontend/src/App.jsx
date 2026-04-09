@@ -1,14 +1,15 @@
-import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import React, { useEffect, Suspense } from 'react';
+import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
 import { ClerkProvider, SignedIn, SignedOut, SignInButton, UserButton, useUser } from '@clerk/clerk-react';
 import axios from 'axios';
 import { Toaster } from 'react-hot-toast';
 
-// Lazy load pages for optimization
+// Optimized lazy loading with preloading
 const Dashboard = React.lazy(() => import('./pages/Dashboard'));
 const ComparisonTool = React.lazy(() => import('./pages/ComparisonTool'));
 const BuilderPage = React.lazy(() => import('./pages/Builder'));
 
+// Eager load critical components
 import Hero from './components/landing/Hero';
 import Features from './components/landing/Features';
 
@@ -19,20 +20,50 @@ if (!PUBLISHABLE_KEY) {
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (typeof window !== 'undefined' && window.location.origin === 'http://localhost:5173' ? 'http://localhost:5000' : '/_/backend');
 
+// Optimized loading component
+const PageLoader = () => (
+  <div className="min-h-screen flex items-center justify-center bg-slate-50">
+    <div className="text-center">
+      <div className="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
+      <p className="text-slate-600 font-medium">Loading CareerFlow...</p>
+    </div>
+  </div>
+);
+
+// Preload critical routes
+const preloadRoutes = () => {
+  // Preload builder on hover/navigation
+  const builderLink = document.querySelector('a[href="/builder"]');
+  if (builderLink) {
+    builderLink.addEventListener('mouseenter', () => {
+      import('./pages/Builder');
+    });
+  }
+};
+
 class ErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
     this.state = { hasError: false };
   }
-  static getDerivedStateFromError(error) { return { hasError: true }; }
-  componentDidCatch(error, errorInfo) { console.error("Uncaught error:", error, errorInfo); }
+  static getDerivedStateFromError(error) {
+    return { hasError: true };
+  }
+  componentDidCatch(error, errorInfo) {
+    console.error("Uncaught error:", error, errorInfo);
+  }
   render() {
     if (this.state.hasError) {
       return (
         <div className="min-h-screen flex items-center justify-center bg-slate-50 p-8 text-center flex-col">
           <h2 className="text-3xl font-black text-slate-900 mb-4">Something went wrong.</h2>
           <p className="text-slate-500 mb-8 max-w-md">The CareerFlow Suite encountered an unexpected error. Please refresh the page.</p>
-          <button onClick={() => window.location.reload()} className="px-8 py-3 bg-blue-600 text-white rounded-xl font-black uppercase tracking-widest hover:bg-blue-700 transition">Restore Workspace</button>
+          <button
+            onClick={() => window.location.reload()}
+            className="px-8 py-3 bg-blue-600 text-white rounded-xl font-black uppercase tracking-widest hover:bg-blue-700 transition"
+          >
+            Restore Workspace
+          </button>
         </div>
       );
     }
@@ -40,12 +71,33 @@ class ErrorBoundary extends React.Component {
   }
 }
 
+// Route preloader component
+const RoutePreloader = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    // Preload routes based on current location
+    if (location.pathname === '/') {
+      // Preload dashboard for signed-in users
+      import('./pages/Dashboard');
+    }
+  }, [location]);
+
+  return null;
+};
+
 function App() {
+  useEffect(() => {
+    // Preload critical routes after initial load
+    setTimeout(preloadRoutes, 2000);
+  }, []);
+
   return (
     <ErrorBoundary>
       <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
         <Toaster position="top-center" />
         <Router>
+          <RoutePreloader />
           <InnerApp />
         </Router>
       </ClerkProvider>
@@ -101,14 +153,14 @@ function InnerApp() {
       </header>
 
       <main className="flex-1 flex flex-col">
-        <React.Suspense fallback={<div className="flex-1 flex items-center justify-center text-slate-400 font-black uppercase tracking-widest animate-pulse">Initializing Suite...</div>}>
+        <Suspense fallback={<PageLoader />}>
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route path="/dashboard" element={<SignedIn><Dashboard /></SignedIn>} />
             <Route path="/compare" element={<SignedIn><ComparisonTool /></SignedIn>} />
             <Route path="/builder" element={<SignedIn><BuilderPage /></SignedIn>} />
           </Routes>
-        </React.Suspense>
+        </Suspense>
       </main>
     </div>
   );

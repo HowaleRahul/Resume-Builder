@@ -3,13 +3,15 @@ import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import { Sparkles, Trash2, Plus } from 'lucide-react';
 import InputField from '../ui/InputField';
 
-export default function ExperienceEditor({ 
-  experienceArray, 
-  onDragEnd, 
-  onAddRole, 
-  onUpdateRole, 
-  onEnhance, 
-  loading 
+export default function ExperienceEditor({
+  experienceArray,
+  onDragEnd,
+  onAddRole,
+  onUpdateRole,
+  onRemoveRole,
+  onEnhance,
+  _loading,
+  loadingStates
 }) {
   return (
     <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">

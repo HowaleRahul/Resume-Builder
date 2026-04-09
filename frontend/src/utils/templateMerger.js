@@ -32,6 +32,43 @@ function extractPreamble(templateCode) {
   return templateCode.slice(0, idx + '\\begin{document}'.length);
 }
 
+/* ── Generic body builder ───────────────────────────────────────────────── */
+function buildGenericBody(data) {
+  const p = data.personal || {};
+  const name = esc(p.name || 'Your Name');
+  const email = esc(p.email || 'email@example.com');
+  const phone = esc(p.phone || '+00 000 000 0000');
+
+  let body = `\\begin{document}
+
+\\begin{center}
+  {\\Huge \\scshape ${name}} \\\\[1.5ex]
+  \\href{mailto:${email}}{${email}} $\\cdot$ ${phone}
+\\end{center}
+
+\\section{Experience}
+`;
+
+  if (data.experience && data.experience.length > 0) {
+    data.experience.forEach(exp => {
+      body += `\\textbf{${esc(exp.position || 'Position')}} at \\textbf{${esc(exp.company || 'Company')}} \\\\
+${esc(exp.location || '')} \\hfill ${esc(exp.startDate || '')} -- ${esc(exp.endDate || 'Present')} \\\\
+\\begin{itemize}
+  \\item ${esc(exp.description || 'Description')}
+\\end{itemize}
+
+`;
+    });
+  }
+
+  body += `\\section{Education}
+\\textbf{Degree} at \\textbf{University} \\hfill Graduation Year
+
+\\end{document}`;
+
+  return body;
+}
+
 /* ── Jitin Nair body builder ─────────────────────────────────────────────── */
 function buildJitinBody(data) {
   const p = data.personal || {};
@@ -400,7 +437,6 @@ function buildProfessionalBody(data) {
   const p = data.personal || {};
   const name = esc(p.name || 'Your Name');
   const phone = esc(p.phone || '');
-  const email = esc(p.email || '');
   const github = esc(p.github || '');
   const linkedin = esc(p.linkedin || '');
   const location = esc(p.location || '');

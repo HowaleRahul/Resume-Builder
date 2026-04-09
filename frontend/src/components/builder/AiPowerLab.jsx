@@ -3,21 +3,22 @@ import { Sparkles, PanelRightClose, BriefcaseBusiness, Code2, Search, FileText, 
 import toast from 'react-hot-toast';
 import AiActionCard from './AiActionCard';
 
-export default function AiPowerLab({ 
-  jdSidebarOpen, 
-  setJdSidebarOpen, 
-  jdText, 
-  setJdText, 
-  handleQuickJDMatch, 
-  jdMatchLoading, 
-  jdAnalysis, 
-  handleAiAction, 
-  aiLoading, 
-  portfolioUrl, 
-  setPortfolioUrl, 
-  handlePortfolioAnalyze, 
-  aiResult, 
-  setAiResult 
+export default function AiPowerLab({
+  jdSidebarOpen,
+  setJdSidebarOpen,
+  jdText,
+  setJdText,
+  handleQuickJDMatch,
+  jdMatchLoading,
+  jdAnalysis,
+  handleAiAction,
+  _aiLoading,
+  loadingStates,
+  portfolioUrl,
+  setPortfolioUrl,
+  handlePortfolioAnalyze,
+  aiResult,
+  setAiResult
 }) {
   return (
     jdSidebarOpen && (
