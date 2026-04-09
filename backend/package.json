@@ -24,22 +24,12 @@
     "helmet": "^8.1.0",
     "mongoose": "^9.4.1",
     "multer": "^2.1.1",
-    "pdfjs-dist": "^4.8.69",
+    "pdf-parse": "^2.4.5",
     "winston": "^3.19.0",
     "winston-daily-rotate-file": "^5.0.0",
     "node-latex": "^3.1.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.0"
-  },
-  "overrides": {
-    "rimraf": "^5.0.0",
-    "glob": "^10.0.0",
-    "inflight": "^1.0.6"
-  },
-  "resolutions": {
-    "**/rimraf": "^5.0.0",
-    "**/glob": "^10.0.0",
-    "**/inflight": "^1.0.6"
+    "nodemon": "^3.1.14"
   }
 }

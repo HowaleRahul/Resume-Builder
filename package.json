@@ -14,11 +14,6 @@
   "workspaces": [
     "frontend",
     "backend"
-  ],
-  "resolutions": {
-    "**/rimraf": "^5.0.0",
-    "**/glob": "^10.0.0",
-    "**/inflight": "^1.0.6"
-  }
+  ]
 }
 

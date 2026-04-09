@@ -168,6 +168,7 @@ export default function ComparisonTool() {
                    <button 
                      key={m} onClick={() => {
                         state.setCompareInputMode(m);
+                        setCompareInputMode(m); // ensure local consistency if any
                      }}
                      className={`px-6 py-2 rounded-lg text-xs font-black uppercase transition-all ${state.compareInputMode === m ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400'}`}
                    >
