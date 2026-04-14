@@ -16,6 +16,7 @@ import {
   AlertCircle
 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import API_BASE_URL from '../../config/api';
 
 const STATUS_COLUMNS = [
   { id: 'wishlist', label: 'Wishlist', icon: <Clock className="text-slate-400" size={16}/>, color: 'bg-slate-100 text-slate-600' },
@@ -38,7 +39,7 @@ export default function JobTracker() {
 
   const fetchJobs = async () => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/jobs/list/${user.id}`);
+      const res = await axios.get(`${API_BASE_URL}/api/jobs/list/${user.id}`);
       if (res.data.success) setJobs(res.data.jobs);
     } catch (err) {
       toast.error('Failed to load jobs');
@@ -50,7 +51,7 @@ export default function JobTracker() {
   const handleAddJob = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post('http://localhost:5000/api/jobs/create', { ...newJob, userId: user.id });
+      const res = await axios.post(`${API_BASE_URL}/api/jobs/create`, { ...newJob, userId: user.id });
       if (res.data.success) {
         setJobs([res.data.job, ...jobs]);
         setShowAddModal(false);
@@ -64,7 +65,7 @@ export default function JobTracker() {
 
   const handleStatusUpdate = async (jobId, newStatus) => {
     try {
-      const res = await axios.put(`http://localhost:5000/api/jobs/update/${jobId}`, { status: newStatus });
+      const res = await axios.put(`${API_BASE_URL}/api/jobs/update/${jobId}`, { status: newStatus });
       if (res.data.success) {
         setJobs(jobs.map(j => j._id === jobId ? { ...j, status: newStatus } : j));
         toast.success(`Moved to ${newStatus}`);
@@ -77,7 +78,7 @@ export default function JobTracker() {
   const handleDeleteJob = async (jobId) => {
     if (!window.confirm('Remove this job from tracker?')) return;
     try {
-      const res = await axios.delete(`http://localhost:5000/api/jobs/delete/${jobId}`);
+      const res = await axios.delete(`${API_BASE_URL}/api/jobs/delete/${jobId}`);
       if (res.data.success) {
         setJobs(jobs.filter(j => j._id !== jobId));
         toast.success('Job removed');

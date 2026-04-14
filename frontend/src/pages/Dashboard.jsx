@@ -12,6 +12,7 @@ import JobTracker from '../components/dashboard/JobTracker';
 import Sidebar from '../components/dashboard/Sidebar';
 import ResumeCard from '../components/dashboard/ResumeCard';
 import TemplateCard from '../components/dashboard/TemplateCard';
+import API_BASE_URL from '../config/api';
 
 export default function Dashboard() {
   const { user } = useUser();
@@ -22,7 +23,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     if (user?.id) {
-      axios.get(`http://localhost:5000/api/resume/list/${user.id}`)
+      axios.get(`${API_BASE_URL}/api/resume/list/${user.id}`)
         .then(res => { if (res.data.success) setResumes(res.data.resumes); })
         .catch(() => {})
         .finally(() => setLoading(false));

@@ -41,12 +41,15 @@ const corsOptions = {
     const allowedOrigins = [
       process.env.FRONTEND_URL,
       'http://localhost:5173',
-      'http://localhost:3000'
+      'http://localhost:3000',
+      'http://localhost:5000'
     ].filter(Boolean);
     
-    if (!origin || allowedOrigins.includes(origin)) {
+    // Allow if origin is in the list, or ends with .vercel.app (production), or or is undefined (for non-browser requests like health check)
+    if (!origin || allowedOrigins.includes(origin) || origin.endsWith('.vercel.app')) {
       callback(null, true);
     } else {
+      logger.warn(`Rejected CORS request from: ${origin}`);
       callback(new Error('CORS not allowed'));
     }
   },

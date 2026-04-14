@@ -1,6 +1,7 @@
 const Resume = require('../models/Resume');
 const latex = require('node-latex');
 const stream = require('stream');
+const { execSync } = require('child_process');
 const logger = require('../utils/logger');
 const { parseLatex } = require('./latexParser');
 const { generateLatex } = require('./latexGenerator');
@@ -21,6 +22,14 @@ class ResumeService {
 
   compilePdf(latexCode) {
     if (!latexCode) throw new Error('latexCode is required');
+
+    // Check if pdflatex is available (Vercel won't have it)
+    try {
+      execSync('pdflatex --version', { stdio: 'ignore' });
+    } catch (e) {
+      logger.error('pdflatex binary not found in system path. Compilation aborted.');
+      throw new Error('LaTeX compilation environment not available. Please use the "Download Source" feature or host on a server with LaTeX installed (e.g., VPS or dedicated API).');
+    }
     
     const input = new stream.Readable();
     input.push(latexCode);

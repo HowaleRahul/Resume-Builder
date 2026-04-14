@@ -11,13 +11,14 @@ const BuilderPage = React.lazy(() => import('./pages/Builder'));
 
 import Hero from './components/landing/Hero';
 import Features from './components/landing/Features';
+import API_BASE_URL from './config/api';
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 if (!PUBLISHABLE_KEY) {
   console.error('VITE_CLERK_PUBLISHABLE_KEY is not set. Please check environment variables.');
 }
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (typeof window !== 'undefined' && window.location.origin === 'http://localhost:5173' ? 'http://localhost:5000' : '/_/backend');
+
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
