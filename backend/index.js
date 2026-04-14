@@ -128,19 +128,17 @@ app.use((err, req, res, next) => {
 
 const PORT = process.env.PORT || 5000;
 
-if (process.env.NODE_ENV !== 'production') {
-  const server = app.listen(PORT, () => {
-    logger.info(`Server running on port ${PORT}`, { port: PORT, env: process.env.NODE_ENV || 'development' });
-    console.log(`✅ Server is listening on http://localhost:${PORT}`);
-  }).on('error', (err) => {
-    if (err.code === 'EADDRINUSE') {
-      logger.error(`Port ${PORT} is already in use. Please close the other process or change the PORT in .env.`);
-    } else {
-      logger.error('Server failed to start', { error: err.message });
-    }
-    process.exit(1);
-  });
-}
+const server = app.listen(PORT, () => {
+  logger.info(`✅ Service is listening on port ${PORT}`, { port: PORT, env: process.env.NODE_ENV || 'development' });
+  console.log(`🚀 CareerFlow AI: Backend is active on port ${PORT}`);
+}).on('error', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    logger.error(`Port ${PORT} is already in use.`);
+  } else {
+    logger.error('Server failed to start', { error: err.message });
+  }
+  process.exit(1);
+});
 
 // Handle unhandled rejections
 process.on('unhandledRejection', (reason, promise) => {
