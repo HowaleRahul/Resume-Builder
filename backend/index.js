@@ -84,10 +84,18 @@ app.use('/api/ai', aiLimiter); // Apply rate limiting to AI routes
 // Route Registration
 // In production (Vercel), we mount everything under /api to match our rewrites
 const mountRoutes = (base) => {
-  app.use(`${base}/resume`, resumeRoutes);
-  app.use(`${base}/ai`, aiRoutes);
-  app.use(`${base}/jobs`, jobRoutes);
-  app.use(`${base}/users`, userRoutes);
+  const safeMount = (path, router) => {
+    if (typeof router !== 'function') {
+      logger.error(`FAILED TO MOUNT ROUTE: ${path} is not a valid router/function!`);
+      return;
+    }
+    app.use(path, router);
+  };
+
+  safeMount(`${base}/resume`, resumeRoutes);
+  safeMount(`${base}/ai`, aiRoutes);
+  safeMount(`${base}/jobs`, jobRoutes);
+  safeMount(`${base}/users`, userRoutes);
 };
 
 mountRoutes('/api');

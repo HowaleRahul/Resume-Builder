@@ -8,7 +8,7 @@ const upload = multer({ storage: multer.memoryStorage() });
 router.post('/ats-score', aiController.calculateAtsScore);
 router.post('/improve', aiController.enhanceResumeText);
 router.post('/compare', aiController.compareResumes);
-router.post('/compare-text', aiController.compareResumesByText);
+router.post('/compare-text', aiController.compareResumes);
 router.post('/translate', aiController.translateResume);
 router.post('/check-syntax', aiController.checkSyntax);
 router.post('/jd-match', aiController.matchJobDescription);
