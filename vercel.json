@@ -1,5 +1,11 @@
 {
   "version": 2,
+  "functions": {
+    "backend/index.js": {
+      "runtime": "vercel-node@latest",
+      "includeFiles": "backend/src/**"
+    }
+  },
   "builds": [
     {
       "src": "frontend/package.json",
