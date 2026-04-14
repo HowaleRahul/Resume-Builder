@@ -35,6 +35,19 @@ app.use(helmet({
 }));
 app.use(compression());
 
+// Path Normalization Middleware (Fixes Vercel 404s from custom prefixes)
+app.use((req, res, next) => {
+  const customPrefix = '/_/backend';
+  if (req.url.startsWith(customPrefix)) {
+    const originalUrl = req.url;
+    req.url = req.url.slice(customPrefix.length);
+    // Ensure it still starts with / for Express routing
+    if (!req.url.startsWith('/')) req.url = '/' + req.url;
+    logger.debug(`Path Normalized: ${originalUrl} -> ${req.url}`);
+  }
+  next();
+});
+
 // CORS Configuration
 const corsOptions = {
   origin: (origin, callback) => {
