@@ -16,12 +16,32 @@ class AiService {
 
       if (json) {
         try {
-          text = text.replace(/```json/g, '').replace(/```/g, '').trim();
-          const jsonMatch = text.match(/\{[\s\S]*\}|\[[\s\S]*\]/);
-          return JSON.parse(jsonMatch ? jsonMatch[0] : text);
+          // 1. Basic markdown cleaning
+          let cleaned = text.replace(/```json/g, '').replace(/```/g, '').trim();
+          
+          // 2. Find the bounds of the JSON object or array
+          const firstBrace = cleaned.indexOf('{');
+          const firstBracket = cleaned.indexOf('[');
+          const startIdx = (firstBrace !== -1 && (firstBracket === -1 || firstBrace < firstBracket)) ? firstBrace : firstBracket;
+          
+          const lastBrace = cleaned.lastIndexOf('}');
+          const lastBracket = cleaned.lastIndexOf(']');
+          const endIdx = (lastBrace !== -1 && (lastBracket === -1 || lastBrace > lastBracket)) ? lastBrace : lastBracket;
+
+          if (startIdx !== -1 && endIdx !== -1 && endIdx > startIdx) {
+            cleaned = cleaned.substring(startIdx, endIdx + 1);
+          }
+
+          // 3. Sanitise potential invisible characters or common AI-specific JSON breaks
+          cleaned = cleaned.replace(/[\u201C\u201D]/g, '"'); // Smart quotes to standard
+
+          return JSON.parse(cleaned);
         } catch (e) {
-          logger.error("Failed to parse JSON from AI response", { text });
-          throw new Error("Invalid JSON from AI");
+          logger.error("Failed to parse JSON from AI response", { 
+            error: e.message,
+            originalText: text.substring(0, 500) + "..." 
+          });
+          throw new Error(`Invalid JSON from AI: ${e.message}`);
         }
       }
       return text;

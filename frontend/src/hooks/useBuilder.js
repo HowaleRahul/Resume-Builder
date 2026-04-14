@@ -94,18 +94,67 @@ export const useBuilder = () => {
     }
   };
 
+  const validateResumeData = (data) => {
+    if (!data || typeof data !== 'object') return null;
+    
+    // Ensure critical structures exist
+    const sanitized = {
+      personal: { 
+        name: data.personal?.name || '', 
+        email: data.personal?.email || '', 
+        phone: data.personal?.phone || '', 
+        location: data.personal?.location || '',
+        github: data.personal?.github || '',
+        linkedin: data.personal?.linkedin || '',
+        website: data.personal?.website || '',
+        objective: data.personal?.objective || ''
+      },
+      summary: data.summary || '',
+      experience: Array.isArray(data.experience) ? data.experience.map(exp => ({
+        title: exp.title || '',
+        companyOrInst: exp.companyOrInst || '',
+        location: exp.location || '',
+        date: exp.date || '',
+        bullets: Array.isArray(exp.bullets) ? exp.bullets : []
+      })) : [],
+      education: Array.isArray(data.education) ? data.education.map(edu => ({
+        title: edu.title || '',
+        companyOrInst: edu.companyOrInst || '',
+        location: edu.location || '',
+        date: edu.date || '',
+        details: edu.details || ''
+      })) : [],
+      skills: Array.isArray(data.skills) ? data.skills.map(s => ({
+        category: s.category || '',
+        items: Array.isArray(s.items) ? s.items : []
+      })) : [],
+      projects: Array.isArray(data.projects) ? data.projects.map(p => ({
+        title: p.title || '',
+        techStack: p.techStack || '',
+        bullets: Array.isArray(p.bullets) ? p.bullets : []
+      })) : []
+    };
+    return sanitized;
+  };
+
   const handleParse = async () => {
     if (!latexInput.trim()) return toast.error("Please paste LaTeX code first.");
     setLoading(true);
     try {
       const res = await axios.post(`${API_BASE_URL}/api/resume/parse`, { latexCode: latexInput });
       if (res.data.success) {
-        setResumeData(res.data.data);
-        setActiveTab('edit');
-        toast.success("Resume Parsed Successfully!");
+        const validated = validateResumeData(res.data.data);
+        if (validated) {
+          setResumeData(validated);
+          setActiveTab('edit');
+          toast.success("Resume Parsed Successfully!");
+        } else {
+          throw new Error("Invalid structure returned");
+        }
       }
     } catch (err) {
-      toast.error("Parsing failed. Check your LaTeX code.");
+      toast.error("Parsing failed. AI returned incompatible data.");
+      console.error("Parse Error:", err);
     } finally {
       setLoading(false);
     }

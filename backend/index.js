@@ -71,10 +71,18 @@ const aiLimiter = rateLimit({
 app.use('/api/ai', aiLimiter); // Apply rate limiting to AI routes
 
 // Route Registration
-app.use('/api/resume', resumeRoutes);
-app.use('/api/ai', aiRoutes);
-app.use('/api/jobs', jobRoutes);
-app.use('/api/users', userRoutes);
+// In production (Vercel), we mount both with and without /api prefix for maximum robustness
+const mountRoutes = (base) => {
+  app.use(`${base}/resume`, resumeRoutes);
+  app.use(`${base}/ai`, aiRoutes);
+  app.use(`${base}/jobs`, jobRoutes);
+  app.use(`${base}/users`, userRoutes);
+};
+
+mountRoutes('/api');
+if (process.env.NODE_ENV === 'production') {
+  mountRoutes(''); // Handle cases where prefix might be stripped by proxy
+}
 
 // Health check with DB status
 app.get('/health', (req, res) => {

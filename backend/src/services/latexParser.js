@@ -21,14 +21,28 @@ function detectTemplate(latexString) {
 /**
  * Parses raw LaTeX code into structured JSON data.
  */
-async function parseLatex(latexString) {
-  const result = {
-    personal: { name: '', email: '', phone: '', location: '', links: [] },
-    education: [],
-    experience: [],
-    projects: [],
-    skills: [],
-    customSections: [],
+async function parseLatex(latexCode) {
+    const systemPrompt = `You are a specialized LaTeX resume parser. 
+    Your task is to convert any LaTeX resume code into a strictly structured JSON format. 
+    Follow these rules:
+    1. Output ONLY a valid JSON object. Do not include any conversational text or markdown explanation.
+    2. Map the data to this schema:
+    {
+      "personal": { "name": "", "email": "", "phone": "", "location": "", "github": "", "linkedin": "", "website": "" },
+      "summary": "",
+      "experience": [{ "title": "", "companyOrInst": "", "location": "", "date": "", "bullets": [] }],
+      "education": [{ "title": "", "companyOrInst": "", "location": "", "date": "", "details": "" }],
+      "skills": [{ "category": "", "items": [] }],
+      "projects": [{ "title": "", "techStack": "", "bullets": [] }]
+    }
+    3. If a section is missing, use an empty array or object.
+    4. Strip all LaTeX commands but preserve the content.`;
+
+    const userPrompt = `Parse the following LaTeX code into JSON according to your rules:
+    
+    ${latexCode}`;
+
+    return await aiService.runPrompt(`SYSTEM: ${systemPrompt}\nUSER: ${userPrompt}`, true);
   };
 
   if (!latexString || typeof latexString !== 'string') return result;
