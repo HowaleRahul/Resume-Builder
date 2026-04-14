@@ -1,44 +1,39 @@
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const logger = require("../utils/logger");
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
 /**
  * AI Service for Gemini interactions
  */
 class AiService {
-  async runPrompt(prompt, json = false) {
+  constructor() {
+    this.genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+  }
+
+  async runPrompt(prompt, jsonMode = false) {
     try {
+      const model = this.genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
       const result = await model.generateContent(prompt);
       const response = await result.response;
       let text = response.text();
 
-      if (json) {
+      if (jsonMode) {
+        // Robust JSON extraction
+        let cleaned = text.replace(/```json/g, '').replace(/```/g, '').trim();
+        
+        const firstBrace = cleaned.indexOf('{');
+        const firstBracket = cleaned.indexOf('[');
+        const startIdx = (firstBrace !== -1 && (firstBracket === -1 || firstBrace < firstBracket)) ? firstBrace : firstBracket;
+        
+        const lastBrace = cleaned.lastIndexOf('}');
+        const lastBracket = cleaned.lastIndexOf(']');
+        const endIdx = (lastBrace !== -1 && (lastBracket === -1 || lastBrace > lastBracket)) ? lastBrace : lastBracket;
+
+        if (startIdx !== -1 && endIdx !== -1 && endIdx > startIdx) {
+          cleaned = cleaned.substring(startIdx, endIdx + 1);
+        }
+
         try {
-          // 1. Basic markdown cleaning
-          let cleaned = text.replace(/```json/g, '').replace(/```/g, '').trim();
-          
-          // 2. Powerful Regex-based extraction (fallback to boundary search)
-          const jsonMatch = cleaned.match(/\{[\s\S]*\}|\[[\s\S]*\]/);
-          if (jsonMatch) {
-            cleaned = jsonMatch[0];
-          } else {
-            // Find the bounds manually if regex fails
-            const firstBrace = cleaned.indexOf('{');
-            const firstBracket = cleaned.indexOf('[');
-            const startIdx = (firstBrace !== -1 && (firstBracket === -1 || firstBrace < firstBracket)) ? firstBrace : firstBracket;
-            
-            const lastBrace = cleaned.lastIndexOf('}');
-            const lastBracket = cleaned.lastIndexOf(']');
-            const endIdx = (lastBrace !== -1 && (lastBracket === -1 || lastBrace > lastBracket)) ? lastBrace : lastBracket;
-
-            if (startIdx !== -1 && endIdx !== -1 && endIdx > startIdx) {
-              cleaned = cleaned.substring(startIdx, endIdx + 1);
-            }
-          }
-
-          // 3. Sanitise common AI JSON breakages
+          // Sanitise common AI JSON breakages
           cleaned = cleaned
             .replace(/[\u201C\u201D]/g, '"') // Smart quotes
             .replace(/[\u2018\u2019]/g, "'") // Smart single quotes

@@ -8,12 +8,19 @@ const connectDB = async () => {
   }
 
   try {
-    const conn = await mongoose.connect(process.env.MONGO_URI);
+    const conn = await mongoose.connect(process.env.MONGO_URI, {
+      serverSelectionTimeoutMS: 5000, // Timeout after 5s instead of 30s
+    });
     logger.info(`MongoDB connected successfully: ${conn.connection.host}`);
     return conn;
   } catch (err) {
-    logger.error('MongoDB connection error', { error: err.message, stack: err.stack });
-    process.exit(1);
+    logger.error('MongoDB connection failure', { 
+      message: err.message, 
+      code: err.code,
+      uri: process.env.MONGO_URI ? 'Present (Hidden)' : 'MISSING'
+    });
+    // Do NOT process.exit(1) on Vercel as it causes a 500 crash
+    return null;
   }
 };
 
