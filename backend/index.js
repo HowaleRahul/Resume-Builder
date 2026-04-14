@@ -35,17 +35,6 @@ app.use(helmet({
 }));
 app.use(compression());
 
-// Path Normalization Middleware (CRITICAL: Fixes Vercel 404s)
-app.use((req, res, next) => {
-  const prefix = '/_/backend';
-  if (req.url.startsWith(prefix)) {
-    req.url = req.url.replace(prefix, '') || '/';
-    // Clean up double slashes
-    req.url = req.url.replace(/\/+/g, '/');
-  }
-  next();
-});
-
 // CORS Configuration
 const corsOptions = {
   origin: (origin, callback) => {
