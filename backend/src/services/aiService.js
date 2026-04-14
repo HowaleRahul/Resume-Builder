@@ -19,29 +19,39 @@ class AiService {
           // 1. Basic markdown cleaning
           let cleaned = text.replace(/```json/g, '').replace(/```/g, '').trim();
           
-          // 2. Find the bounds of the JSON object or array
-          const firstBrace = cleaned.indexOf('{');
-          const firstBracket = cleaned.indexOf('[');
-          const startIdx = (firstBrace !== -1 && (firstBracket === -1 || firstBrace < firstBracket)) ? firstBrace : firstBracket;
-          
-          const lastBrace = cleaned.lastIndexOf('}');
-          const lastBracket = cleaned.lastIndexOf(']');
-          const endIdx = (lastBrace !== -1 && (lastBracket === -1 || lastBrace > lastBracket)) ? lastBrace : lastBracket;
+          // 2. Powerful Regex-based extraction (fallback to boundary search)
+          const jsonMatch = cleaned.match(/\{[\s\S]*\}|\[[\s\S]*\]/);
+          if (jsonMatch) {
+            cleaned = jsonMatch[0];
+          } else {
+            // Find the bounds manually if regex fails
+            const firstBrace = cleaned.indexOf('{');
+            const firstBracket = cleaned.indexOf('[');
+            const startIdx = (firstBrace !== -1 && (firstBracket === -1 || firstBrace < firstBracket)) ? firstBrace : firstBracket;
+            
+            const lastBrace = cleaned.lastIndexOf('}');
+            const lastBracket = cleaned.lastIndexOf(']');
+            const endIdx = (lastBrace !== -1 && (lastBracket === -1 || lastBrace > lastBracket)) ? lastBrace : lastBracket;
 
-          if (startIdx !== -1 && endIdx !== -1 && endIdx > startIdx) {
-            cleaned = cleaned.substring(startIdx, endIdx + 1);
+            if (startIdx !== -1 && endIdx !== -1 && endIdx > startIdx) {
+              cleaned = cleaned.substring(startIdx, endIdx + 1);
+            }
           }
 
-          // 3. Sanitise potential invisible characters or common AI-specific JSON breaks
-          cleaned = cleaned.replace(/[\u201C\u201D]/g, '"'); // Smart quotes to standard
+          // 3. Sanitise common AI JSON breakages
+          cleaned = cleaned
+            .replace(/[\u201C\u201D]/g, '"') // Smart quotes
+            .replace(/[\u2018\u2019]/g, "'") // Smart single quotes
+            .replace(/\\n/g, ' ') // Escape newlines in strings
+            .replace(/\n/g, ' '); // Direct newlines
 
           return JSON.parse(cleaned);
         } catch (e) {
-          logger.error("Failed to parse JSON from AI response", { 
+          logger.error("AI Parsing Robustness Error", { 
             error: e.message,
-            originalText: text.substring(0, 500) + "..." 
+            originalText: text.substring(0, 1000) 
           });
-          throw new Error(`Invalid JSON from AI: ${e.message}`);
+          throw new Error(`AI generated incompatible data structure: ${e.message}`);
         }
       }
       return text;

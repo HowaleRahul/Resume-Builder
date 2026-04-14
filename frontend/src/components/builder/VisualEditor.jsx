@@ -1,9 +1,20 @@
 import React from 'react';
-import { FileText, Sparkles, Code2, Plus } from 'lucide-react';
+import { FileText, Sparkles, Code2, Plus, Trash2, XCircle } from 'lucide-react';
 import InputField from '../ui/InputField';
 import ExperienceEditor from '../editor/ExperienceEditor';
 
 export default function VisualEditor({ resumeData, setResumeData, updatePersonal }) {
+  if (!resumeData) return (
+    <div className="absolute inset-0 flex items-center justify-center bg-slate-50">
+      <div className="text-center">
+        <div className="w-16 h-16 bg-blue-50 text-blue-600 rounded-3xl flex items-center justify-center mx-auto mb-4 animate-pulse">
+           <FileText size={32} />
+        </div>
+        <p className="text-slate-500 font-bold">Initializing editor data...</p>
+      </div>
+    </div>
+  );
+
   return (
     <div className="absolute inset-0 overflow-y-auto p-8 scroll-smooth bg-slate-50 no-print no-scrollbar">
       <div className="max-w-3xl mx-auto space-y-8">
@@ -53,11 +64,14 @@ export default function VisualEditor({ resumeData, setResumeData, updatePersonal
           <ExperienceEditor 
             experienceArray={resumeData.experience || []} 
             onUpdateRole={(idx, f, v) => {
-              const n = [...resumeData.experience]; n[idx] = {...n[idx], [f]: v};
-              setResumeData({...resumeData, experience: n});
+              const n = [...(resumeData.experience || [])]; 
+              if (n[idx]) {
+                n[idx] = {...n[idx], [f]: v};
+                setResumeData({...resumeData, experience: n});
+              }
             }} 
             onRemoveRole={idx => {
-              const n = resumeData.experience.filter((_, i) => i !== idx);
+              const n = (resumeData.experience || []).filter((_, i) => i !== idx);
               setResumeData({...resumeData, experience: n});
             }} 
             onAddRole={() => setResumeData({...resumeData, experience: [...(resumeData.experience || []), { title: '', companyOrInst: '', date: '', location: '', url: '', bullets: [''] }]})}
@@ -78,22 +92,22 @@ export default function VisualEditor({ resumeData, setResumeData, updatePersonal
            <div className="space-y-6">
              {(resumeData.education || []).map((edu, idx) => (
                <div key={idx} className="p-6 bg-slate-50/50 border border-slate-100 rounded-3xl relative group">
-                 <button onClick={() => setResumeData({...resumeData, education: resumeData.education.filter((_, i) => i !== idx)})} className="absolute top-6 right-6 text-slate-300 hover:text-red-500 transition-colors"><Trash2 size={16}/></button>
+                 <button onClick={() => setResumeData({...resumeData, education: (resumeData.education || []).filter((_, i) => i !== idx)})} className="absolute top-6 right-6 text-slate-300 hover:text-red-500 transition-colors"><Trash2 size={16}/></button>
                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                    <InputField label="Degree / Certificate" value={edu.title} onChange={v => {
-                      const n = [...resumeData.education]; n[idx] = {...n[idx], title: v};
+                      const n = [...(resumeData.education || [])]; n[idx] = {...n[idx], title: v};
                       setResumeData({...resumeData, education: n});
                    }} />
                    <InputField label="Institution" value={edu.companyOrInst} onChange={v => {
-                      const n = [...resumeData.education]; n[idx] = {...n[idx], companyOrInst: v};
+                      const n = [...(resumeData.education || [])]; n[idx] = {...n[idx], companyOrInst: v};
                       setResumeData({...resumeData, education: n});
                    }} />
                    <InputField label="Dates" value={edu.date} onChange={v => {
-                      const n = [...resumeData.education]; n[idx] = {...n[idx], date: v};
+                      const n = [...(resumeData.education || [])]; n[idx] = {...n[idx], date: v};
                       setResumeData({...resumeData, education: n});
                    }} />
                    <InputField label="Details / CGPA" value={edu.details} onChange={v => {
-                      const n = [...resumeData.education]; n[idx] = {...n[idx], details: v};
+                      const n = [...(resumeData.education || [])]; n[idx] = {...n[idx], details: v};
                       setResumeData({...resumeData, education: n});
                    }} />
                  </div>
@@ -116,30 +130,30 @@ export default function VisualEditor({ resumeData, setResumeData, updatePersonal
            <div className="space-y-6">
              {(resumeData.projects || []).map((proj, idx) => (
                <div key={idx} className="p-6 bg-slate-50/50 border border-slate-100 rounded-3xl relative group">
-                 <button onClick={() => setResumeData({...resumeData, projects: resumeData.projects.filter((_, i) => i !== idx)})} className="absolute top-6 right-6 text-slate-300 hover:text-red-500 transition-colors"><Trash2 size={16}/></button>
+                 <button onClick={() => setResumeData({...resumeData, projects: (resumeData.projects || []).filter((_, i) => i !== idx)})} className="absolute top-6 right-6 text-slate-300 hover:text-red-500 transition-colors"><Trash2 size={16}/></button>
                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                    <InputField label="Project Title" value={proj.title} onChange={v => {
-                      const n = [...resumeData.projects]; n[idx] = {...n[idx], title: v};
+                      const n = [...(resumeData.projects || [])]; n[idx] = {...n[idx], title: v};
                       setResumeData({...resumeData, projects: n});
                    }} />
                    <InputField label="Tech Stack" value={proj.techStack} onChange={v => {
-                      const n = [...resumeData.projects]; n[idx] = {...n[idx], techStack: v};
+                      const n = [...(resumeData.projects || [])]; n[idx] = {...n[idx], techStack: v};
                       setResumeData({...resumeData, projects: n});
                    }} />
                  </div>
                  <div className="space-y-2">
                     <div className="flex justify-between items-center text-[10px] font-black text-slate-300 uppercase tracking-widest mb-2">Description Bullets <button onClick={() => {
-                        const n = [...resumeData.projects]; n[idx].bullets = [...n[idx].bullets, ""];
+                        const n = [...(resumeData.projects || [])]; n[idx].bullets = [...(n[idx].bullets || []), ""];
                         setResumeData({...resumeData, projects: n});
                     }} className="text-rose-600">+ Add</button></div>
-                    {proj.bullets && proj.bullets.map((b, bIdx) => (
+                    {(proj.bullets || []).map((b, bIdx) => (
                         <div key={bIdx} className="flex space-x-2">
                             <textarea className="flex-1 bg-white border border-slate-100 rounded-xl p-3 text-xs text-slate-600 outline-none focus:ring-2 focus:ring-rose-500/20 shadow-sm min-h-12" value={b} onChange={e => {
-                                const n = [...resumeData.projects]; n[idx].bullets[bIdx] = e.target.value;
+                                const n = [...(resumeData.projects || [])]; n[idx].bullets[bIdx] = e.target.value;
                                 setResumeData({...resumeData, projects: n});
                             }}/>
                             <button onClick={() => {
-                                const n = [...resumeData.projects]; n[idx].bullets = n[idx].bullets.filter((_, i) => i !== bIdx);
+                                const n = [...(resumeData.projects || [])]; n[idx].bullets = (n[idx].bullets || []).filter((_, i) => i !== bIdx);
                                 setResumeData({...resumeData, projects: n});
                             }} className="text-slate-300 hover:text-rose-500"><XCircle size={14}/></button>
                         </div>
@@ -164,30 +178,30 @@ export default function VisualEditor({ resumeData, setResumeData, updatePersonal
           <div className="space-y-6">
             {(resumeData.skills || []).map((cat, cIdx) => (
               <div key={cIdx} className="p-6 bg-slate-50/50 border border-slate-100 rounded-3xl relative group">
-                <button onClick={() => setResumeData({...resumeData, skills: resumeData.skills.filter((_, i) => i !== cIdx)})} className="absolute top-6 right-6 text-slate-300 hover:text-red-500 transition-colors"><Trash2 size={16}/></button>
+                <button onClick={() => setResumeData({...resumeData, skills: (resumeData.skills || []).filter((_, i) => i !== cIdx)})} className="absolute top-6 right-6 text-slate-300 hover:text-red-500 transition-colors"><Trash2 size={16}/></button>
                 <input className="bg-transparent font-black text-slate-800 text-sm outline-none border-b-2 border-transparent focus:border-emerald-500 mb-4 w-full" value={cat.category} onChange={e => {
-                  const n = [...resumeData.skills]; n[cIdx] = {...n[cIdx], category: e.target.value};
+                  const n = [...(resumeData.skills || [])]; n[cIdx] = {...n[cIdx], category: e.target.value};
                   setResumeData({...resumeData, skills: n});
                 }} />
                 <div className="flex flex-wrap gap-3">
                   {(cat.items || []).map((item, iIdx) => (
                     <div key={iIdx} className="flex items-center bg-white border border-slate-100 shadow-sm rounded-xl px-4 py-2 group/item">
                       <input className="bg-transparent text-xs font-bold text-slate-600 w-24 outline-none" value={item} onChange={e => {
-                        const n = [...resumeData.skills];
-                        const items = [...n[cIdx].items]; items[iIdx] = e.target.value;
+                        const n = [...(resumeData.skills || [])];
+                        const items = [...(n[cIdx].items || [])]; items[iIdx] = e.target.value;
                         n[cIdx] = {...n[cIdx], items};
                         setResumeData({...resumeData, skills: n});
                       }} />
                       <button onClick={() => {
-                        const n = [...resumeData.skills];
-                        const items = n[cIdx].items.filter((_, i) => i !== iIdx);
+                        const n = [...(resumeData.skills || [])];
+                        const items = (n[cIdx].items || []).filter((_, i) => i !== iIdx);
                         n[cIdx] = {...n[cIdx], items};
                         setResumeData({...resumeData, skills: n});
                       }} className="ml-2 text-slate-200 hover:text-rose-500 opacity-0 group-hover/item:opacity-100 transition-opacity"><XCircle size={12}/></button>
                     </div>
                   ))}
                   <button onClick={() => {
-                     const n = [...resumeData.skills]; n[cIdx] = {...n[cIdx], items: [...n[cIdx].items, ""]};
+                     const n = [...(resumeData.skills || [])]; n[cIdx] = {...n[cIdx], items: [...(n[cIdx].items || []), ""]};
                      setResumeData({...resumeData, skills: n});
                   }} className="text-[10px] font-black text-emerald-600 bg-emerald-50 px-4 py-2 rounded-xl hover:bg-emerald-100 transition tracking-widest uppercase">+ Add Item</button>
                 </div>
@@ -201,6 +215,3 @@ export default function VisualEditor({ resumeData, setResumeData, updatePersonal
     </div>
   );
 }
-
-// Sub-components used in VisualEditor (Trash2, XCircle)
-import { Trash2, XCircle } from 'lucide-react';

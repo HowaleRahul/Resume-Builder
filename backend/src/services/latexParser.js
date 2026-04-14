@@ -22,11 +22,8 @@ function detectTemplate(latexString) {
  * Parses raw LaTeX code into structured JSON data.
  */
 async function parseLatex(latexCode) {
-    const systemPrompt = `You are a specialized LaTeX resume parser. 
-    Your task is to convert any LaTeX resume code into a strictly structured JSON format. 
-    Follow these rules:
-    1. Output ONLY a valid JSON object. Do not include any conversational text or markdown explanation.
-    2. Map the data to this schema:
+    const prompt = `Convert the following LaTeX resume code into a strictly structured JSON format. 
+    Output ONLY a valid JSON object following this schema:
     {
       "personal": { "name": "", "email": "", "phone": "", "location": "", "github": "", "linkedin": "", "website": "" },
       "summary": "",
@@ -35,14 +32,13 @@ async function parseLatex(latexCode) {
       "skills": [{ "category": "", "items": [] }],
       "projects": [{ "title": "", "techStack": "", "bullets": [] }]
     }
-    3. If a section is missing, use an empty array or object.
-    4. Strip all LaTeX commands but preserve the content.`;
+    If a section is missing, return an empty array or object for that property. 
+    Strip all LaTeX commands but preserve the human-readable text.
 
-    const userPrompt = `Parse the following LaTeX code into JSON according to your rules:
-    
+    LATEX CODE TO PARSE:
     ${latexCode}`;
 
-    return await aiService.runPrompt(`SYSTEM: ${systemPrompt}\nUSER: ${userPrompt}`, true);
+    return await aiService.runPrompt(prompt, true);
   };
 
   if (!latexString || typeof latexString !== 'string') return result;
@@ -115,7 +111,7 @@ async function parseLatex(latexCode) {
   }
 
   return result;
-}
+
 
 /**
  * Extracts elements like \cventry or \resumeItem from a section chunk.

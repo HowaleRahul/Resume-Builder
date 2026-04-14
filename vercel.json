@@ -6,8 +6,12 @@
       "destination": "/backend/index.js"
     },
     {
+      "source": "/_/backend/:path*",
+      "destination": "/backend/index.js"
+    },
+    {
       "source": "/(.*)",
-      "destination": "/frontend/index.html"
+      "destination": "/index.html"
     }
   ],
   "builds": [
