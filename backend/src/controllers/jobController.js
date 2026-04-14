@@ -8,8 +8,15 @@ exports.createJob = async (req, res) => {
     res.json({ success: true, job: savedJob });
     logger.info('New Job tracked', { jobId: savedJob._id, user: savedJob.userId });
   } catch (err) {
-    logger.error('Error creating Job', { error: err.message });
-    res.status(400).json({ success: false, message: 'Failed to create job' });
+    logger.error('Error creating Job', { 
+      error: err.message, 
+      stack: err.stack,
+      body: req.body 
+    });
+    res.status(400).json({ 
+      success: false, 
+      message: err.message || 'Failed to create job' 
+    });
   }
 };
 

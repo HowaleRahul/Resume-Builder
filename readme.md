@@ -2,8 +2,6 @@
 
 **CareerFlow AI** is a premium, production-ready AI-powered career management suite. It helps engineers and developers build ATS-optimized LaTeX resumes, track job applications with a Kanban board, and analyze their portfolio for skill gaps.
 
-![CareerFlow AI Banner](https://images.unsplash.com/photo-1586281380349-632531db7ed4?auto=format&fit=crop&q=80&w=2070)
-
 ## ✨ Core Features
 
 -   **🤖 AI Resume Architect**: Generate high-fidelity LaTeX resumes from raw text or PDFs. Powered by Google Gemini.

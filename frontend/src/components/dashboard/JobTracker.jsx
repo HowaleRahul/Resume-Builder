@@ -59,7 +59,9 @@ export default function JobTracker() {
         toast.success('Job added to tracker');
       }
     } catch (err) {
-      toast.error('Failed to add job');
+      const errorMsg = err.response?.data?.message || err.message;
+      toast.error(`Failed to add job: ${errorMsg}`);
+      console.error("Job Creation Error:", err.response?.data);
     }
   };
 

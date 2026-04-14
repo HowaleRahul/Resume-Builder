@@ -14,13 +14,25 @@ export const useBuilder = () => {
   const [loading, setLoading] = useState(false);
   const [compileError, setCompileError] = useState(null);
   
-  // New: Advanced Loading States for AI feedback
+  // Advanced Loading States for AI feedback
   const [loadingStates, setLoadingStates] = useState({
-    enhancingBullet: null, // index of bullet being enhanced
+    enhancingBullet: null, 
     generatingAts: false,
     tailoring: false,
-    jdMatch: false
+    jdMatch: false,
+    generatingLetter: false,
+    skillGap: false,
+    interviewPrep: false,
+    analyzingPortfolio: false
   });
+
+  // Missing States for AI PowerLab & Parsing
+  const [jdSidebarOpen, setJdSidebarOpen] = useState(false);
+  const [jdText, setJdText] = useState('');
+  const [jdAnalysis, setJdAnalysis] = useState(null);
+  const [aiResult, setAiResult] = useState(null); // { type: string, data: any }
+  const [portfolioUrl, setPortfolioUrl] = useState('');
+  const [latexInput, setLatexInput] = useState('');
 
   // Load from local storage on mount
   useEffect(() => {
@@ -82,6 +94,96 @@ export const useBuilder = () => {
     }
   };
 
+  const handleParse = async () => {
+    if (!latexInput.trim()) return toast.error("Please paste LaTeX code first.");
+    setLoading(true);
+    try {
+      const res = await axios.post(`${API_BASE_URL}/api/resume/parse`, { latexCode: latexInput });
+      if (res.data.success) {
+        setResumeData(res.data.data);
+        setActiveTab('edit');
+        toast.success("Resume Parsed Successfully!");
+      }
+    } catch (err) {
+      toast.error("Parsing failed. Check your LaTeX code.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleQuickJDMatch = async () => {
+    if (!jdText.trim()) return toast.error("Paste a Job Description first.");
+    setLoadingStates(prev => ({ ...prev, jdMatch: true }));
+    try {
+      const res = await axios.post(`${API_BASE_URL}/api/ai/jd-match`, {
+        jobDescription: jdText,
+        resumeText: JSON.stringify(resumeData)
+      });
+      if (res.data.success) {
+        setJdAnalysis(res.data);
+        toast.success("ATS Analysis Ready!");
+      }
+    } catch (err) {
+      toast.error("Analysis failed.");
+    } finally {
+      setLoadingStates(prev => ({ ...prev, jdMatch: false }));
+    }
+  };
+
+  const handleAiAction = async (actionType) => {
+    if (!jdText.trim()) return toast.error("Paste a Job Description first.");
+    
+    // Map loading states
+    const statusMap = {
+      'tailor': 'tailoring',
+      'cover-letter': 'generatingLetter',
+      'skill-gap': 'skillGap',
+      'interview-prep': 'interviewPrep'
+    };
+    
+    const loadingKey = statusMap[actionType];
+    setLoadingStates(prev => ({ ...prev, [loadingKey]: true }));
+    
+    try {
+      const endpointMap = {
+        'tailor': '/api/ai/tailor',
+        'cover-letter': '/api/ai/cover-letter',
+        'skill-gap': '/api/ai/skill-gap',
+        'interview-prep': '/api/ai/interview-prep'
+      };
+
+      const res = await axios.post(`${API_BASE_URL}${endpointMap[actionType]}`, {
+        resumeData,
+        jobDescription: jdText
+      });
+
+      if (res.data.success) {
+        setAiResult({ type: actionType, data: res.data });
+        toast.success(`${actionType.replace('-',' ')} generated!`, { icon: '🤖' });
+      }
+    } catch (err) {
+      toast.error(`${actionType} failed.`);
+    } finally {
+      setLoadingStates(prev => ({ ...prev, [loadingKey]: false }));
+    }
+  };
+
+  const handlePortfolioAnalyze = async () => {
+    if (!portfolioUrl.trim()) return toast.error("Enter a URL first.");
+    setLoadingStates(prev => ({ ...prev, analyzingPortfolio: true }));
+    try {
+      const res = await axios.post(`${API_BASE_URL}/api/ai/analyze-portfolio`, { url: portfolioUrl });
+      if (res.data.success) {
+        setAiResult({ type: 'portfolio-extraction', data: res.data.extractedData });
+        toast.success("Portfolio Analyzed!");
+      }
+    } catch (err) {
+      toast.error("Portfolio analysis failed.");
+    } finally {
+      setLoadingStates(prev => ({ ...prev, analyzingPortfolio: false }));
+    }
+  };
+
   const updatePersonal = (field, value) => {
     setResumeData(prev => ({
       ...prev,
@@ -124,10 +226,21 @@ export const useBuilder = () => {
       activeTab, setActiveTab,
       codeEditMode, setCodeEditMode,
       loading, compileError,
-      loadingStates
+      loadingStates,
+      // Missing States
+      jdSidebarOpen, setJdSidebarOpen,
+      jdText, setJdText,
+      jdAnalysis,
+      aiResult, setAiResult,
+      portfolioUrl, setPortfolioUrl,
+      latexInput, setLatexInput
     },
     actions: {
       handleGenerate,
+      handleParse,
+      handleQuickJDMatch,
+      handleAiAction,
+      handlePortfolioAnalyze,
       updatePersonal,
       handleEnhanceBullet,
       handleResetTemplate
