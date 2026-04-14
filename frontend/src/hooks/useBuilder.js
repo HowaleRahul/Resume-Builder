@@ -256,7 +256,11 @@ export const useBuilder = () => {
     try {
       const res = await axios.post(`${API_BASE_URL}/api/ai/improve`, { text: bulletText });
       if (res.data.success) {
-        const improvedText = res.data.improvedText;
+        // Handle both possible key names
+        const improvedText = res.data.improvedText || (Array.isArray(res.data.suggestions) ? res.data.suggestions[0] : null);
+        
+        if (!improvedText) throw new Error("No suggestions returned");
+
         const newData = { ...resumeData };
         newData.experience[expIdx].bullets[bulletIdx] = improvedText;
         setResumeData(newData);

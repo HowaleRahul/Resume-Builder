@@ -5,8 +5,13 @@ const axios = require('axios');
 
 exports.enhanceResumeText = async (req, res) => {
   try {
-    const suggestions = await aiService.enhanceText(req.body.textToImprove);
-    res.json({ success: true, suggestions });
+    const suggestions = await aiService.enhanceText(req.body.text || req.body.textToImprove);
+    // Return both for compatibility with different UI components
+    res.json({ 
+      success: true, 
+      suggestions, 
+      improvedText: suggestions[0] // Pick the best one as default
+    });
   } catch (err) {
     res.status(500).json({ error: 'AI Improvement failed', details: err.message });
   }
@@ -115,7 +120,12 @@ exports.getInterviewPrep = async (req, res) => {
 exports.analyzePortfolio = async (req, res) => {
   try {
     const { url } = req.body;
-    const webRes = await axios.get(url, { timeout: 8000 });
+    const webRes = await axios.get(url, { 
+      timeout: 8000,
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+      }
+    });
     const snippet = webRes.data.substring(0, 8000);
     const prompt = `Extract professional experience/projects from this text. Return JSON: { "projects": [{"title":"", "bullets":[], "date":"", "url": "${url}"}] }. TEXT: ${snippet}`;
     const result = await aiService.runPrompt(prompt, true);
