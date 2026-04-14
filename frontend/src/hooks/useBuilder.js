@@ -142,6 +142,10 @@ export const useBuilder = () => {
     setLoading(true);
     try {
       const res = await axios.post(`${API_BASE_URL}/api/resume/parse`, { latexCode: latexInput });
+      
+      // DIAGNOSTIC LOGGING
+      console.log("🔍 AI RAW RESPONSE:", res.data);
+
       if (res.data.success) {
         const validated = validateResumeData(res.data.data);
         if (validated) {
@@ -149,12 +153,17 @@ export const useBuilder = () => {
           setActiveTab('edit');
           toast.success("Resume Parsed Successfully!");
         } else {
+          console.warn("⚠️ AI VALIDATION FAILED. Structure:", res.data.data);
           throw new Error("Invalid structure returned");
         }
       }
     } catch (err) {
-      toast.error("Parsing failed. AI returned incompatible data.");
-      console.error("Parse Error:", err);
+      console.error("❌ PARSE FAILED:", {
+        message: err.message,
+        response: err.response?.data,
+        latex: latexInput.substring(0, 100) + "..."
+      });
+      toast.error("Parsing failed. Check console for details.");
     } finally {
       setLoading(false);
     }

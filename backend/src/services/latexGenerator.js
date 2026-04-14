@@ -16,14 +16,22 @@ function generateLatex(json, template = 'moderncv') {
 
   // Personal Info
   if (json.personal) {
-    const { name, email, phone, location } = json.personal;
-    if (name) {
-      const parts = name.split(' ');
-      latex += `\\name{${parts[0] || ''}}{${parts.slice(1).join(' ') || ''}}\n`;
-    }
+    const name = json.personal.name || 'Professional Candidate';
+    const email = json.personal.email || '';
+    const phone = json.personal.phone || '';
+    const location = json.personal.location || '';
+    
+    // Split name safely
+    const parts = name.trim().split(/\s+/);
+    const firstName = parts[0] || 'Professional';
+    const lastName = parts.slice(1).join(' ') || 'Candidate';
+    latex += `\\name{${escapeLatex(firstName)}}{${escapeLatex(lastName)}}\n`;
+    
     if (phone) latex += `\\phone[mobile]{${escapeLatex(phone)}}\n`;
     if (email) latex += `\\email{${escapeLatex(email)}}\n`;
     if (location) latex += `\\address{${escapeLatex(location)}}{}\n`;
+  } else {
+    latex += `\\name{Professional}{Candidate}\n`;
   }
 
   latex += `\n\\begin{document}\n\\makecvtitle\n\n`;
@@ -37,6 +45,7 @@ function generateLatex(json, template = 'moderncv') {
   if (json.education && json.education.length > 0) {
     latex += `\\section{Education}\n`;
     json.education.forEach(edu => {
+      if (!edu.title && !edu.companyOrInst) return;
       latex += `\\cventry{${escapeLatex(edu.date || '')}}{${escapeLatex(edu.title || '')}}{${escapeLatex(edu.companyOrInst || '')}}{${escapeLatex(edu.location || '')}}{${escapeLatex(edu.details || '')}}{}\n`;
     });
     latex += `\n`;
@@ -46,16 +55,14 @@ function generateLatex(json, template = 'moderncv') {
   if (json.experience && json.experience.length > 0) {
     latex += `\\section{Experience}\n`;
     json.experience.forEach(exp => {
-      latex += `\\cventry{${escapeLatex(exp.date || '')}}{${escapeLatex(exp.title || '')}}{${escapeLatex(exp.companyOrInst || '')}}{${escapeLatex(exp.location || '')}}{${escapeLatex(exp.details || '')}}{`;
+      if (!exp.title && !exp.companyOrInst) return;
+      latex += `\\cventry{${escapeLatex(exp.date || '')}}{${escapeLatex(exp.title || '')}}{${escapeLatex(exp.companyOrInst || '')}}{${escapeLatex(exp.location || '')}}{}{`;
       if (exp.bullets && exp.bullets.length > 0) {
          latex += `\\begin{itemize} `;
          exp.bullets.forEach(b => {
-           if (b.trim()) latex += `\\item ${escapeLatex(b.trim())} `;
+           if (b && b.trim()) latex += `\\item ${escapeLatex(b.trim())} `;
          });
          latex += `\\end{itemize}`;
-      } else if (exp.description) {
-         // Fallback legacy support
-         latex += `${escapeLatex(exp.description)}`;
       }
       latex += `}\n`;
     });
