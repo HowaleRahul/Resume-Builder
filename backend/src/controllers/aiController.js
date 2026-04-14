@@ -24,11 +24,26 @@ exports.calculateAtsScore = async (req, res) => {
 
 exports.compareResumes = async (req, res) => {
   try {
-    const { resumeA, resumeB } = req.body;
-    const data = await aiService.compareResumes(resumeA, resumeB);
+    const { 
+      resumeA, resumeB, 
+      resumeAText, resumeBText, 
+      resumeALabel, resumeBLabel 
+    } = req.body;
+
+    // Support both structured JSON (from builder) and raw text (from PDF/pasting)
+    const contentA = resumeA || resumeAText;
+    const contentB = resumeB || resumeBText;
+    const labels = [resumeALabel || 'Resume A', resumeBLabel || 'Resume B'];
+
+    if (!contentA || !contentB) {
+      return res.status(400).json({ success: false, error: 'Both resumes must be provided' });
+    }
+
+    const data = await aiService.compareResumes(contentA, contentB, labels);
     res.json({ success: true, data });
   } catch (err) {
-    res.status(500).json({ error: 'Comparison failed', details: err.message });
+    logger.error('Comparison Error:', { error: err.message });
+    res.status(500).json({ success: false, error: 'Comparison failed', details: err.message });
   }
 };
 
