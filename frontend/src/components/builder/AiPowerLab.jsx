@@ -2,6 +2,7 @@ import React from 'react';
 import { Sparkles, PanelRightClose, BriefcaseBusiness, Code2, Search, FileText, AlertCircle, Trash2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import AiActionCard from './AiActionCard';
+import AiResultDisplay from './AiResultDisplay';
 
 export default function AiPowerLab({ 
   jdSidebarOpen, 
@@ -16,7 +17,8 @@ export default function AiPowerLab({
   portfolioUrl,
   setPortfolioUrl,
   handlePortfolioAnalyze,
-  aiResult
+  aiResult,
+  setResumeData
 }) {
     return (
       jdSidebarOpen && (

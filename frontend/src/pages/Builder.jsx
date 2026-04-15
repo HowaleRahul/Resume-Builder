@@ -164,6 +164,7 @@ export default function Builder() {
       <AiPowerLab 
         {...state} 
         {...actions} 
+        setResumeData={state.setResumeData}
       />
     </div>
   );

@@ -8,9 +8,9 @@ export default function Sidebar({ activeSubTab, setActiveSubTab }) {
       <div className="p-6">
         <div className="flex items-center space-x-3 mb-10 px-2">
           <div className="w-10 h-10 rounded-xl bg-linear-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white font-black text-2xl shadow-lg ring-4 ring-blue-50">
-            C
+            L
           </div>
-          <span className="text-xl font-black text-slate-900 tracking-tighter">CareerFlow AI</span>
+          <span className="text-xl font-black text-slate-900 tracking-tighter">LatentCV</span>
         </div>
 
         <div className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">Core Suite</div>
