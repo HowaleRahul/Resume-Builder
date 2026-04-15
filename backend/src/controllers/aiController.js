@@ -13,7 +13,8 @@ exports.enhanceResumeText = async (req, res) => {
       improvedText: suggestions[0] // Pick the best one as default
     });
   } catch (err) {
-    res.status(500).json({ error: 'AI Improvement failed', details: err.message });
+    logger.error("AI Improvement failed", { error: err.message });
+    res.status(500).json({ success: false, message: 'AI Improvement failed', details: err.message });
   }
 };
 
@@ -23,7 +24,8 @@ exports.calculateAtsScore = async (req, res) => {
     const result = await aiService.matchJobDescription(jobDescription, JSON.stringify(parsedResumeData));
     res.json({ success: true, ...result });
   } catch (err) {
-    res.status(500).json({ error: 'ATS analysis failed', details: err.message });
+    logger.error("ATS analysis failed", { error: err.message });
+    res.status(500).json({ success: false, message: 'ATS analysis failed', details: err.message });
   }
 };
 
@@ -48,7 +50,7 @@ exports.compareResumes = async (req, res) => {
     res.json({ success: true, data });
   } catch (err) {
     logger.error('Comparison Error:', { error: err.message });
-    res.status(500).json({ success: false, error: 'Comparison failed', details: err.message });
+    res.status(500).json({ success: false, message: 'Comparison failed', details: err.message });
   }
 };
 
@@ -58,7 +60,8 @@ exports.translateResume = async (req, res) => {
     const translatedData = await aiService.translate(resumeData, targetLanguage);
     res.json({ success: true, translatedData });
   } catch (err) {
-    res.status(500).json({ error: 'Translation failed', details: err.message });
+    logger.error("Translation failed", { error: err.message });
+    res.status(500).json({ success: false, message: 'Translation failed', details: err.message });
   }
 };
 
@@ -77,7 +80,8 @@ exports.matchJobDescription = async (req, res) => {
     const result = await aiService.matchJobDescription(jobDescription, resumeText);
     res.json({ success: true, ...result });
   } catch (err) {
-    res.status(500).json({ error: 'JD matching failed', details: err.message });
+    logger.error("JD matching failed", { error: err.message });
+    res.status(500).json({ success: false, message: 'JD matching failed', details: err.message });
   }
 };
 

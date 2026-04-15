@@ -4,7 +4,7 @@ const jobController = require('../controllers/jobController');
 
 router.post('/create', jobController.createJob);
 router.get('/list/:userId', jobController.getJobs);
-router.put('/update/:jobId', jobController.updateJobStatus);
+router.put('/update/:jobId', jobController.updateJob);
 router.delete('/delete/:jobId', jobController.deleteJob);
 router.get('/stats/:userId', jobController.getJobStats);
 

@@ -1,7 +1,30 @@
 import React from 'react';
 import { Code2 } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 export default function SourceImport({ latexInput, setLatexInput }) {
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (!file.name.endsWith('.tex') && !file.name.endsWith('.txt')) {
+        return toast.error("Only .tex or .txt files are supported");
+      }
+      const reader = new FileReader();
+      reader.onload = (e) => setLatexInput(e.target.result);
+      reader.readAsText(file);
+    }
+  };
+
+  const onDrop = (e) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => setLatexInput(e.target.result);
+      reader.readAsText(file);
+    }
+  };
+
   return (
     <div className="absolute inset-0 flex flex-col bg-white p-8 space-y-6 no-print overflow-hidden">
       <div className="flex items-center justify-between mb-2">
@@ -11,20 +34,30 @@ export default function SourceImport({ latexInput, setLatexInput }) {
             </div>
             <div>
                <h2 className="text-2xl font-black text-slate-900 tracking-tight">Source Import</h2>
-               <p className="text-sm text-slate-400 font-medium tracking-tight">Paste your existing Overleaf / LaTeX code to begin visual editing.</p>
+               <p className="text-sm text-slate-400 font-medium tracking-tight">Paste your code or drop a .tex file to begin visual editing.</p>
             </div>
          </div>
-         <div className="hidden md:block px-4 py-2 bg-slate-50 border border-slate-100 rounded-xl">
-            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Supported Formats</p>
-            <p className="text-xs font-bold text-slate-600">ModernCV · Awesome-CV · Article</p>
+         <div className="flex space-x-3">
+            <label className="cursor-pointer px-5 py-2.5 bg-slate-900 text-white rounded-xl font-bold text-sm shadow-xl shadow-slate-200 hover:bg-slate-800 transition flex items-center">
+               <span className="mr-2">Upload .tex</span>
+               <input type="file" className="hidden" accept=".tex,.txt" onChange={handleFileChange} />
+            </label>
+            <div className="hidden md:block px-4 py-2 bg-slate-50 border border-slate-100 rounded-xl">
+               <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Supported Formats</p>
+               <p className="text-xs font-bold text-slate-600">ModernCV · Awesome-CV · Article</p>
+            </div>
          </div>
       </div>
       
-      <div className="flex-1 relative group">
+      <div 
+        className="flex-1 relative group"
+        onDragOver={(e) => e.preventDefault()}
+        onDrop={onDrop}
+      >
         <div className="absolute -inset-1 bg-linear-to-r from-blue-500 to-indigo-600 rounded-[2.5rem] blur-xl opacity-0 group-focus-within:opacity-10 transition duration-1000"></div>
         <textarea
           className="relative flex-1 w-full h-full bg-slate-900 text-blue-100 font-mono p-10 rounded-[2.5rem] shadow-2xl outline-none resize-none border-0 transition-all text-sm leading-relaxed no-scrollbar"
-          placeholder="% Paste your LaTeX source code here...
+          placeholder="% Paste your LaTeX source code here or drop a file...
 \documentclass{article}
 \begin{document}
 Hello World

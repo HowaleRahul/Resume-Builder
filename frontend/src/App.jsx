@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { ClerkProvider, SignedIn, SignedOut, SignInButton, UserButton, useUser } from '@clerk/clerk-react';
 import axios from 'axios';
 import { Toaster } from 'react-hot-toast';
+import { Target, Zap, Code2, FileText } from 'lucide-react';
 
 // Lazy load pages for optimization
 const Dashboard = React.lazy(() => import('./pages/Dashboard'));
@@ -120,15 +121,18 @@ function LandingPage() {
     <div className="flex-1 bg-white">
       <Hero />
       <div className="max-w-7xl mx-auto px-4 pb-24">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 py-12 border-y border-slate-100 bg-slate-50/50 rounded-3xl">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 py-16 border-y border-slate-100 bg-slate-50/30 rounded-[3rem] px-8">
           {[
-            { label: 'ATS Success Avg', val: '96%' },
-            { label: 'Cloud Templates', val: '12+' },
-            { label: 'Processing Speed', val: '⚡ 1.2s' },
-            { label: 'Enterprise Format', val: 'Overleaf' }
+            { label: 'ATS Success Avg', val: '96%', icon: <Target className="text-blue-600"/>, color: 'text-blue-600' },
+            { label: 'Cloud Templates', val: '12+', icon: <FileText className="text-indigo-600"/>, color: 'text-indigo-600' },
+            { label: 'Processing Speed', val: '1.2s', icon: <Zap className="text-amber-500 fill-amber-500"/>, color: 'text-amber-900' },
+            { label: 'Enterprise Format', val: 'LaTeX', icon: <Code2 className="text-cyan-600"/>, color: 'text-cyan-600' }
           ].map((s, i) => (
-            <div key={i} className="text-center group">
-              <div className="text-3xl font-black text-slate-900 mb-1 group-hover:text-blue-600 transition-colors">{s.val}</div>
+            <div key={i} className="flex flex-col items-center text-center group cursor-default">
+              <div className="w-12 h-12 rounded-2xl bg-white shadow-sm flex items-center justify-center mb-4 group-hover:scale-110 group-hover:shadow-xl group-hover:shadow-blue-200/20 transition-all duration-500">
+                {s.icon}
+              </div>
+              <div className={`text-4xl font-black ${s.color} mb-1 tracking-tighter`}>{s.val}</div>
               <div className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{s.label}</div>
             </div>
           ))}

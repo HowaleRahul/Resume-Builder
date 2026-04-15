@@ -89,10 +89,12 @@ function generateLatex(json, template = 'moderncv') {
   // Skills
   if (json.skills && json.skills.length > 0) {
     latex += `\\section{Skills}\n`;
-    json.skills.forEach(skillCat => {
-        const items = (skillCat.items || []).join(', ');
-        if (items) {
-            latex += `\\cvitem{${escapeLatex(skillCat.category)}}{${escapeLatex(items)}}\n`;
+    json.skills.forEach(skill => {
+        if (skill.category && Array.isArray(skill.items)) {
+            const items = skill.items.join(', ');
+            if (items) latex += `\\cvitem{${escapeLatex(skill.category)}}{${escapeLatex(items)}}\n`;
+        } else if (skill.text) {
+            latex += `\\cvitem{}{${escapeLatex(skill.text)}}\n`;
         }
     });
     latex += `\n`;
@@ -166,6 +168,33 @@ function generateStandard(json) {
       }
       latex += `\\vspace{0.5em}\n`;
     });
+  }
+
+  if (json.projects && json.projects.length > 0) {
+    latex += `\\section*{Projects}\n`;
+    json.projects.forEach(proj => {
+      latex += `\\noindent \\textbf{${escapeLatex(proj.title || '')}} \\hfill ${escapeLatex(proj.techStack || '')}\n`;
+      if (proj.bullets && proj.bullets.length > 0) {
+        latex += `\\begin{itemize} \n`;
+        proj.bullets.forEach(b => {
+           if (b.trim()) latex += `\\item ${escapeLatex(b.trim())}\n`;
+        });
+        latex += `\\end{itemize}\n`;
+      }
+      latex += `\\vspace{0.5em}\n`;
+    });
+  }
+
+  if (json.skills && json.skills.length > 0) {
+    latex += `\\section*{Skills}\n\\begin{itemize}\n`;
+    json.skills.forEach(skill => {
+        if (skill.category && Array.isArray(skill.items)) {
+            latex += `\\item \\textbf{${escapeLatex(skill.category)}}: ${escapeLatex(skill.items.join(', '))}\n`;
+        } else if (skill.text) {
+            latex += `\\item ${escapeLatex(skill.text)}\n`;
+        }
+    });
+    latex += `\\end{itemize}\n\n`;
   }
 
   latex += `\\end{document}\n`;

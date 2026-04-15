@@ -31,7 +31,8 @@ export default function JobTracker() {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
-  const [newJob, setNewJob] = useState({ company: '', position: '', status: 'wishlist', url: '', location: '' });
+  const [expandedJob, setExpandedJob] = useState(null); // ID of the job being edited in detail
+  const [newJob, setNewJob] = useState({ company: '', position: '', status: 'wishlist', url: '', location: '', notes: '' });
 
   useEffect(() => {
     if (user?.id) fetchJobs();
@@ -65,12 +66,13 @@ export default function JobTracker() {
     }
   };
 
-  const handleStatusUpdate = async (jobId, newStatus) => {
+  const handleUpdate = async (jobId, updates) => {
     try {
-      const res = await axios.put(`${API_BASE_URL}/api/jobs/update/${jobId}`, { status: newStatus });
+      const res = await axios.put(`${API_BASE_URL}/api/jobs/update/${jobId}`, updates);
       if (res.data.success) {
-        setJobs(jobs.map(j => j._id === jobId ? { ...j, status: newStatus } : j));
-        toast.success(`Moved to ${newStatus}`);
+        setJobs(jobs.map(j => j._id === jobId ? { ...j, ...updates } : j));
+        if (updates.status) toast.success(`Moved to ${updates.status}`);
+        else toast.success('Job details updated');
       }
     } catch (err) {
       toast.error('Update failed');
@@ -127,46 +129,67 @@ export default function JobTracker() {
               
               <div className="flex-1 space-y-4 overflow-y-auto no-scrollbar pb-10">
                 {jobs.filter(j => j.status === col.id).map(job => (
-                  <div key={job._id} className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition group relative">
-                    <div className="flex justify-between items-start mb-3">
-                      <div>
-                        <h4 className="font-black text-slate-900 leading-tight mb-1">{job.position}</h4>
-                        <p className="text-xs font-bold text-blue-600">{job.company}</p>
+                  <div key={job._id} className={`bg-white rounded-2xl border transition-all duration-300 group relative ${expandedJob === job._id ? 'border-blue-500 shadow-xl scale-[1.02] z-10' : 'border-slate-200 shadow-sm hover:shadow-md'}`}>
+                    <div className="p-5">
+                      <div className="flex justify-between items-start mb-3">
+                        <div className="cursor-pointer flex-1" onClick={() => setExpandedJob(expandedJob === job._id ? null : job._id)}>
+                          <h4 className="font-black text-slate-900 leading-tight mb-1">{job.position}</h4>
+                          <p className="text-xs font-bold text-blue-600">{job.company}</p>
+                        </div>
+                        <div className="flex space-x-2">
+                           <button onClick={() => setExpandedJob(expandedJob === job._id ? null : job._id)} className="text-slate-300 hover:text-blue-500 transition">
+                             <MoreVertical size={14}/>
+                           </button>
+                           <button onClick={() => handleDeleteJob(job._id)} className="text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition">
+                             <Trash2 size={14}/>
+                           </button>
+                        </div>
                       </div>
-                      <button onClick={() => handleDeleteJob(job._id)} className="text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition">
-                        <Trash2 size={14}/>
-                      </button>
-                    </div>
-                    
-                    <div className="space-y-2 mb-4">
-                      {job.location && (
-                        <div className="flex items-center text-[11px] text-slate-500">
-                          <MapPin size={12} className="mr-1.5 text-slate-400" /> {job.location}
+                      
+                      <div className="space-y-2 mb-4">
+                        {job.location && (
+                          <div className="flex items-center text-[11px] text-slate-500 font-medium">
+                            <MapPin size={12} className="mr-1.5 text-slate-400" /> {job.location}
+                          </div>
+                        )}
+                        <div className="flex items-center text-[11px] text-slate-500 font-medium">
+                          <Calendar size={12} className="mr-1.5 text-slate-400" /> 
+                          {new Date(job.dateApplied).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                        </div>
+                      </div>
+
+                      {expandedJob === job._id && (
+                        <div className="mb-4 space-y-3 animate-slide-up border-t pt-4">
+                           <div className="space-y-1">
+                              <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Personal Notes</label>
+                              <textarea 
+                                className="w-full bg-slate-50 border border-slate-100 rounded-xl p-3 text-[11px] text-slate-600 outline-none focus:ring-2 focus:ring-blue-500/10 min-h-20"
+                                placeholder="Add interview notes, contacts, or reminders..."
+                                defaultValue={job.notes}
+                                onBlur={(e) => handleUpdate(job._id, { notes: e.target.value })}
+                              />
+                           </div>
                         </div>
                       )}
-                      <div className="flex items-center text-[11px] text-slate-500">
-                        <Calendar size={12} className="mr-1.5 text-slate-400" /> 
-                        {new Date(job.dateApplied).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+  
+                      <div className="flex items-center justify-between pt-3 border-t border-slate-50">
+                        <div className="flex space-x-2">
+                           {STATUS_COLUMNS.filter(c => c.id !== job.status).slice(0, 2).map(c => (
+                             <button 
+                               key={c.id}
+                               onClick={() => handleUpdate(job._id, { status: c.id })}
+                               className="text-[9px] font-black uppercase text-slate-400 hover:text-blue-600 transition"
+                             >
+                               To {c.label}
+                             </button>
+                           ))}
+                        </div>
+                        {job.url && (
+                          <a href={job.url} target="_blank" rel="noreferrer" className="text-slate-400 hover:text-slate-600">
+                            <LinkIcon size={12}/>
+                          </a>
+                        )}
                       </div>
-                    </div>
-
-                    <div className="flex items-center justify-between pt-3 border-t border-slate-50">
-                      <div className="flex space-x-2">
-                         {STATUS_COLUMNS.filter(c => c.id !== job.status).slice(0, 2).map(c => (
-                           <button 
-                             key={c.id}
-                             onClick={() => handleStatusUpdate(job._id, c.id)}
-                             className="text-[9px] font-black uppercase text-slate-400 hover:text-blue-600 transition"
-                           >
-                             To {c.label}
-                           </button>
-                         ))}
-                      </div>
-                      {job.url && (
-                        <a href={job.url} target="_blank" rel="noreferrer" className="text-slate-400 hover:text-slate-600">
-                          <LinkIcon size={12}/>
-                        </a>
-                      )}
                     </div>
                   </div>
                 ))}
@@ -205,6 +228,11 @@ export default function JobTracker() {
                 <label className="text-xs font-black text-slate-400 uppercase tracking-wider">Job URL</label>
                 <input className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 outline-none" 
                   placeholder="https://linkedin.com/jobs/..." value={newJob.url} onChange={e => setNewJob({...newJob, url: e.target.value})} />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-xs font-black text-slate-400 uppercase tracking-wider">Initial Notes / Context</label>
+                <textarea className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 outline-none min-h-24 resize-none" 
+                  placeholder="Remote role, referral from Mike..." value={newJob.notes} onChange={e => setNewJob({...newJob, notes: e.target.value})} />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1.5">

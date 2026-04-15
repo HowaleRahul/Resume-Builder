@@ -88,7 +88,22 @@ export default function Dashboard() {
 
               {loading ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {[1,2,3].map(i => <div key={i} className="h-48 bg-slate-100 rounded-3xl animate-pulse" />)}
+                  {[1,2,3].map(i => (
+                    <div key={i} className="bg-white rounded-[2rem] border border-slate-100 p-6 space-y-4 animate-pulse">
+                      <div className="flex justify-between items-start">
+                        <div className="space-y-2">
+                          <div className="h-5 w-32 bg-slate-100 rounded-lg"></div>
+                          <div className="h-3 w-48 bg-slate-50 rounded-lg"></div>
+                        </div>
+                        <div className="h-8 w-8 bg-slate-100 rounded-xl"></div>
+                      </div>
+                      <div className="h-px bg-slate-50"></div>
+                      <div className="flex justify-between items-center">
+                        <div className="h-3 w-20 bg-slate-50 rounded-lg"></div>
+                        <div className="h-3 w-12 bg-slate-100 rounded-lg"></div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               ) : filteredResumes.length === 0 ? (
                 <div className="text-center py-20 bg-white border border-slate-200 border-dashed rounded-[2.5rem]">

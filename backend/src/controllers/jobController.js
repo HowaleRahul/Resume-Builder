@@ -25,17 +25,19 @@ exports.getJobs = async (req, res) => {
     const jobs = await Job.find({ userId: req.params.userId }).sort({ updatedAt: -1 });
     res.json({ success: true, jobs });
   } catch (err) {
-    res.status(500).json({ success: false, message: 'Server error' });
+    logger.error('Error fetching jobs', { error: err.message, userId: req.params.userId });
+    res.status(500).json({ success: false, message: 'Server error', details: err.message });
   }
 };
 
-exports.updateJobStatus = async (req, res) => {
+exports.updateJob = async (req, res) => {
   try {
-    const job = await Job.findByIdAndUpdate(req.params.jobId, { status: req.body.status }, { new: true });
+    const job = await Job.findByIdAndUpdate(req.params.jobId, { ...req.body }, { new: true });
     res.json({ success: true, job });
-    logger.info('Job status updated', { jobId: job._id, newStatus: job.status });
+    logger.info('Job updated', { jobId: job._id, updatedFields: Object.keys(req.body) });
   } catch (err) {
-    res.status(400).json({ success: false, message: 'Update failed' });
+    logger.error('Job update failed', { error: err.message, jobId: req.params.jobId });
+    res.status(400).json({ success: false, message: 'Update failed', details: err.message });
   }
 };
 

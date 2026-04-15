@@ -59,8 +59,19 @@ export default function Builder() {
   }, [location.search]);
 
   const handleDownloadPdf = () => {
+    toast.success("Opening Print Dialogue... Use 'Save as PDF' in the destination.", { duration: 4000 });
     window.print();
-    toast.success("Preparing PDF for download...");
+  };
+
+  const handleDownloadSource = () => {
+    if (!state.generatedLatex) return toast.error("No LaTeX code to download.");
+    const element = document.createElement("a");
+    const file = new Blob([state.generatedLatex], {type: 'text/plain'});
+    element.href = URL.createObjectURL(file);
+    element.download = "resume_source.tex";
+    document.body.appendChild(element);
+    element.click();
+    toast.success("LaTeX source code downloaded!");
   };
 
   return (
@@ -125,9 +136,12 @@ export default function Builder() {
             <div className="w-[40%] flex flex-col bg-slate-900 border-r border-slate-800 no-print shadow-2xl z-10 transition-all duration-300">
               <div className="p-4 bg-slate-800/50 flex justify-between items-center text-slate-400 font-black text-[10px] tracking-[0.2em] uppercase">
                 <span className="flex items-center">Compiled LaTeX Source</span>
-                <div className="flex space-x-3">
-                   <button onClick={() => state.setPreviewCode(state.generatedLatex)} className="bg-indigo-600 text-white px-4 py-1.5 rounded-lg hover:bg-indigo-500 transition shadow-lg shadow-indigo-900/40">Sync Editor</button>
-                </div>
+                    <div className="flex space-x-3">
+                     <button onClick={handleDownloadSource} className="bg-slate-700 text-slate-300 px-4 py-1.5 rounded-lg hover:bg-slate-600 transition flex items-center">
+                        <span className="mr-2 text-sm">Download .tex</span>
+                     </button>
+                     <button onClick={() => state.setPreviewCode(state.generatedLatex)} className="bg-indigo-600 text-white px-4 py-1.5 rounded-lg hover:bg-indigo-500 transition shadow-lg shadow-indigo-900/40">Sync Editor</button>
+                  </div>
               </div>
               <textarea 
                 className="flex-1 bg-transparent text-blue-50/70 font-mono p-8 outline-none resize-none text-[13px] leading-relaxed no-scrollbar" 

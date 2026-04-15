@@ -9,7 +9,7 @@ exports.parseResume = async (req, res) => {
     res.json({ success: true, data: parsedData });
   } catch (err) {
     logger.error('Failed to parse LaTeX', { error: err.message });
-    res.status(500).json({ error: 'Parsing Failed', details: err.message });
+    res.status(500).json({ success: false, message: 'Parsing Failed', details: err.message });
   }
 };
 
@@ -19,7 +19,8 @@ exports.generateResume = (req, res) => {
     const generatedLatex = resumeService.generate(resumeData, template);
     res.json({ success: true, latexCode: generatedLatex });
   } catch (err) {
-    res.status(500).json({ error: 'Generation Failed', details: err.message });
+    logger.error('Failed to generate resume', { error: err.message });
+    res.status(500).json({ success: false, message: 'Generation Failed', details: err.message });
   }
 };
 
@@ -44,7 +45,8 @@ exports.saveResume = async (req, res) => {
     const result = await resumeService.save(req.body);
     res.json({ success: true, resumeId: result._id });
   } catch (err) {
-    res.status(500).json({ error: 'Failed to save resume', details: err.message });
+    logger.error('Failed to save resume', { error: err.message });
+    res.status(500).json({ success: false, message: 'Failed to save resume', details: err.message });
   }
 };
 

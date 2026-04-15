@@ -124,10 +124,15 @@ export const useBuilder = () => {
         date: edu.date || '',
         details: edu.details || ''
       })) : [],
-      skills: Array.isArray(data.skills) ? data.skills.map(s => ({
-        category: s.category || '',
-        items: Array.isArray(s.items) ? s.items : []
-      })) : [],
+      skills: Array.isArray(data.skills) ? (
+        // If it's an array of objects that ALREADY have categories, keep them
+        data.skills.every(s => s && typeof s === 'object' && s.category && Array.isArray(s.items))
+          ? data.skills 
+          : [{ 
+              category: 'Core Competencies', 
+              items: data.skills.map(s => typeof s === 'string' ? s : (s.text || s.category || JSON.stringify(s))) 
+            }]
+      ) : [],
       projects: Array.isArray(data.projects) ? data.projects.map(p => ({
         title: p.title || '',
         techStack: p.techStack || '',
@@ -158,12 +163,9 @@ export const useBuilder = () => {
         }
       }
     } catch (err) {
-      console.error("❌ PARSE FAILED:", {
-        message: err.message,
-        response: err.response?.data,
-        latex: latexInput.substring(0, 100) + "..."
-      });
-      toast.error("Parsing failed. Check console for details.");
+      console.error("❌ PARSE FAILED:", err);
+      const details = err.response?.data?.details || err.message;
+      toast.error(`Parsing failed: ${details}`);
     } finally {
       setLoading(false);
     }
@@ -216,7 +218,12 @@ export const useBuilder = () => {
       });
 
       if (res.data.success) {
-        setAiResult({ type: actionType, data: res.data });
+        // Extract the actual content based on action type
+        let displayData = res.data;
+        if (actionType === 'cover-letter') displayData = res.data.coverLetterLatex;
+        if (actionType === 'tailor') displayData = res.data.tailoredData;
+        
+        setAiResult({ type: actionType, data: displayData });
         toast.success(`${actionType.replace('-',' ')} generated!`, { icon: '🤖' });
       }
     } catch (err) {

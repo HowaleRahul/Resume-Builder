@@ -108,20 +108,25 @@ export default function AiPowerLab({
 
             {/* AI Results Display */}
             {aiResult && (
-              <div className="bg-slate-50 border rounded-xl p-4 animate-fade-in relative">
-                <button onClick={() => setAiResult(null)} className="absolute top-2 right-2 text-slate-400 hover:text-slate-600"><Trash2 size={14}/></button>
-                <h5 className="font-bold text-slate-900 text-xs mb-3 uppercase tracking-widest">{(aiResult.type || '').replace('-',' ')}</h5>
-                <div className="text-xs text-slate-700 space-y-3 whitespace-pre-wrap font-mono max-h-64 overflow-y-auto">
-                  {JSON.stringify(aiResult.data, null, 2)}
-                </div>
-                <button onClick={() => { 
-                  try {
-                    navigator.clipboard.writeText(JSON.stringify(aiResult.data, null, 2)); 
-                    toast.success('Copied!'); 
-                  } catch(e) {
-                    toast.error('Failed to copy');
-                  }
-                }} className="mt-4 w-full py-2 bg-white border border-slate-200 rounded-lg text-xs font-bold hover:bg-slate-50">Copy Result</button>
+              <div className="animate-fade-in relative group">
+                <button 
+                  onClick={() => setAiResult(null)} 
+                  className="absolute top-0 right-0 p-2 text-slate-300 hover:text-rose-500 transition-colors z-10"
+                >
+                  <Trash2 size={16}/>
+                </button>
+                <AiResultDisplay 
+                  result={aiResult} 
+                  onApply={(type, data) => {
+                    if (type === 'project') {
+                      setResumeData(prev => ({
+                        ...prev,
+                        projects: [...(prev.projects || []), data]
+                      }));
+                      toast.success('Project added to resume!');
+                    }
+                  }}
+                />
               </div>
             )}
           </div>

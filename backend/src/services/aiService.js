@@ -1,5 +1,6 @@
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const logger = require("../utils/logger");
+const { extractJson } = require("../utils/aiUtils");
 
 /**
  * AI Service for Gemini interactions
@@ -17,37 +18,7 @@ class AiService {
       let text = response.text();
 
       if (jsonMode) {
-        // Robust JSON extraction
-        let cleaned = text.replace(/```json/g, '').replace(/```/g, '').trim();
-        
-        const firstBrace = cleaned.indexOf('{');
-        const firstBracket = cleaned.indexOf('[');
-        const startIdx = (firstBrace !== -1 && (firstBracket === -1 || firstBrace < firstBracket)) ? firstBrace : firstBracket;
-        
-        const lastBrace = cleaned.lastIndexOf('}');
-        const lastBracket = cleaned.lastIndexOf(']');
-        const endIdx = (lastBrace !== -1 && (lastBracket === -1 || lastBrace > lastBracket)) ? lastBrace : lastBracket;
-
-        if (startIdx !== -1 && endIdx !== -1 && endIdx > startIdx) {
-          cleaned = cleaned.substring(startIdx, endIdx + 1);
-        }
-
-        try {
-          // Sanitise common AI JSON breakages
-          cleaned = cleaned
-            .replace(/[\u201C\u201D]/g, '"') // Smart quotes
-            .replace(/[\u2018\u2019]/g, "'") // Smart single quotes
-            .replace(/\\n/g, ' ') // Escape newlines in strings
-            .replace(/\n/g, ' '); // Direct newlines
-
-          return JSON.parse(cleaned);
-        } catch (e) {
-          logger.error("AI Parsing Robustness Error", { 
-            error: e.message,
-            originalText: text.substring(0, 1000) 
-          });
-          throw new Error(`AI generated incompatible data structure: ${e.message}`);
-        }
+        return extractJson(text);
       }
       return text;
     } catch (err) {
@@ -57,7 +28,10 @@ class AiService {
   }
 
   async enhanceText(text) {
-    const prompt = `Rewrite the following resume bullet point to be more professional, impactful, and use strong action verbs. Return ONLY 3 rewritten options as a JSON array of strings: "${text}"`;
+    const prompt = `Rewrite the following resume bullet point to be more professional, impactful, and use strong action verbs. 
+    Return ONLY a JSON array of 3 strings. 
+    Example: ["Improved project efficiency by 20%", "Led team of 5", "Implemented CI/CD"].
+    Target Text: "${text}"`;
     return await this.runPrompt(prompt, true);
   }
 

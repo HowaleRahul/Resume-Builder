@@ -23,12 +23,19 @@ class ResumeService {
   compilePdf(latexCode) {
     if (!latexCode) throw new Error('latexCode is required');
 
-    // Check if pdflatex is available (Vercel won't have it)
-    try {
-      execSync('pdflatex --version', { stdio: 'ignore' });
-    } catch (e) {
-      logger.error('pdflatex binary not found in system path. Compilation aborted.');
-      throw new Error('LaTeX compilation environment not available. Please use the "Download Source" feature or host on a server with LaTeX installed (e.g., VPS or dedicated API).');
+    // Optimization: Check pdflatex availability only once or periodically
+    if (this._pdflatexAvailable === undefined) {
+      try {
+        execSync('pdflatex --version', { stdio: 'ignore' });
+        this._pdflatexAvailable = true;
+      } catch (e) {
+        this._pdflatexAvailable = false;
+        logger.error('pdflatex binary not found in system path.');
+      }
+    }
+
+    if (!this._pdflatexAvailable) {
+      throw new Error('LaTeX compilation engine (pdflatex) is not installed on this server. AI Resume Suite can still generate the source code, but PDF compilation is restricted. Please use the "Download .tex" option or "Native Print" in the browser.');
     }
     
     const input = new stream.Readable();

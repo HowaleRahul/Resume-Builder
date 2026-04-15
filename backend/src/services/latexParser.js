@@ -1,5 +1,6 @@
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const logger = require('../utils/logger');
+const { extractJson } = require('../utils/aiUtils');
 
 /**
  * Parses raw LaTeX code into structured JSON data.
@@ -39,10 +40,10 @@ async function parseLatex(latexCode) {
                 Return ONLY valid JSON format. Start with { and end with }. Do not include markdown codeblocks.
             `;
             const aiResult = await model.generateContent(prompt);
-            let outputText = aiResult.response.text();
-            outputText = outputText.replace(/```json/g, '').replace(/```/g, '').trim();
-            const aiParsedData = JSON.parse(outputText);
-            return { ...result, ...aiParsedData };
+            const aiParsedData = extractJson(aiResult.response.text());
+            if (aiParsedData) {
+              return { ...result, ...aiParsedData };
+            }
         } catch (e) {
             logger.warn('AI primary parser failed, falling back to regex', { error: e.message });
         }
