@@ -18,14 +18,24 @@ export default function BuilderHeader({
   setJdSidebarOpen,
   loading,
   latexInput,
-  TEMPLATE_REGISTRY
+  TEMPLATE_REGISTRY,
+  isSyncing
 }) {
   return (
     <div className="bg-white border-b border-slate-200 px-6 py-3 flex items-center justify-between z-10 shrink-0 no-print">
-      <div className="flex space-x-1 bg-slate-100 p-1.5 rounded-2xl shadow-inner">
-        <TabButton active={activeTab === 'input'} onClick={() => setActiveTab('input')} icon={<FileText size={16}/>} label="Source" />
-        <TabButton active={activeTab === 'edit'} onClick={() => setActiveTab('edit')} icon={<Sparkles size={16}/>} label="Visual Editor" disabled={!resumeData} />
-        <TabButton active={activeTab === 'preview'} onClick={() => setActiveTab('preview')} icon={<Play size={16}/>} label="Export PDF" disabled={!generatedLatex && !previewCode} />
+      <div className="flex items-center space-x-6">
+        <div className="flex space-x-1 bg-slate-100 p-1.5 rounded-2xl shadow-inner">
+          <TabButton active={activeTab === 'input'} onClick={() => setActiveTab('input')} icon={<FileText size={16}/>} label="Source" />
+          <TabButton active={activeTab === 'edit'} onClick={() => setActiveTab('edit')} icon={<Sparkles size={16}/>} label="Visual Editor" disabled={!resumeData} />
+          <TabButton active={activeTab === 'preview'} onClick={() => setActiveTab('preview')} icon={<Play size={16}/>} label="Export PDF" disabled={!generatedLatex && !previewCode} />
+        </div>
+
+        {isSyncing && (
+          <div className="flex items-center space-x-2 animate-pulse">
+            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"></div>
+            <span className="text-[10px] font-black uppercase tracking-widest text-emerald-600">Saved to Cloud</span>
+          </div>
+        )}
       </div>
 
       <div className="flex space-x-3 items-center">

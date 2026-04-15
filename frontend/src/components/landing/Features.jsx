@@ -3,33 +3,43 @@ import { Sparkles, ShieldCheck, Monitor, Zap } from 'lucide-react';
 
 export default function Features() {
   return (
-    <section className="bg-white py-32">
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="text-left mb-24 max-w-3xl">
-          <p className="text-blue-600 font-black uppercase tracking-[0.3em] text-xs mb-4">Core Intelligence</p>
-          <h2 className="text-5xl font-black text-slate-900 mb-6 leading-tight">Everything you need to bypass screening bots.</h2>
+    <section className="bg-slate-50/50 py-44 relative overflow-hidden">
+      <div className="absolute top-1/2 left-0 w-[800px] h-[800px] bg-blue-100/20 rounded-full blur-[120px] -translate-x-1/2 -z-10" />
+      
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-24 gap-8">
+          <div className="max-w-2xl">
+            <p className="text-blue-600 font-black uppercase tracking-[0.4em] text-[10px] mb-6">Product Intelligence</p>
+            <h2 className="text-5xl md:text-6xl font-black text-slate-900 leading-[1.1] tracking-tighter">
+              Bypass screening algorithms <br />
+              <span className="text-slate-400">with mathematical precision.</span>
+            </h2>
+          </div>
+          <p className="text-slate-500 font-medium text-lg max-w-sm mb-2">
+            Our neural engine ensures your expertise is formatted exactly how hiring managers and ATS bots expect. No guesswork.
+          </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <FeatureCard 
             icon={<Sparkles className="text-amber-500" />}
             title="Career Tailor"
-            desc="Instant rewriting of project bullets to match high-priority keywords in any JD."
+            desc="AI-driven rewriting of project outcomes to match JD priority keywords with 99% accuracy."
           />
           <FeatureCard 
-            icon={<ShieldCheck className="text-emerald-500" />}
-            title="Skill Evaluator"
-            desc="Gap analysis report showing exactly what certifications or tech you're missing."
+            icon={<ShieldCheck className="text-blue-600" />}
+            title="Skill Auditor"
+            desc="Exhaustive gap analysis reports that highlight exactly where your technical stack needs reinforcement."
           />
           <FeatureCard 
             icon={<Monitor className="text-indigo-600" />}
-            title="Portfolio Sync"
-            desc="Deep-sync your GitHub repositories to extract meaningful project metrics automatically."
+            title="Deep Extraction"
+            desc="Intelligently sync your GitHub repositories to quantify project metrics and impact automatically."
           />
           <FeatureCard 
-            icon={<Zap className="text-blue-600" />}
-            title="Binary Export"
-            desc="Download production-grade PDFs or raw LaTeX code for full manual control."
+            icon={<Zap className="text-cyan-500" />}
+            title="Source Control"
+            desc="Full export capability to production LaTeX code or high-fidelity PDF, giving you total creative control."
           />
         </div>
       </div>
@@ -39,12 +49,15 @@ export default function Features() {
 
 function FeatureCard({ icon, title, desc }) {
   return (
-    <div className="bg-white p-10 rounded-[3rem] border border-slate-100 shadow-sm hover:shadow-2xl hover:shadow-blue-500/5 hover:-translate-y-2 transition-all duration-500 group text-left">
-      <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center mb-8 border border-white shadow-inner group-hover:scale-110 transition-transform duration-500">
-        {React.cloneElement(icon, { size: 32 })}
+    <div className="bg-white p-12 rounded-[3.5rem] border border-slate-200/50 shadow-sm hover:shadow-2xl hover:shadow-blue-500/10 hover:-translate-y-3 transition-all duration-700 group relative overflow-hidden">
+      <div className="absolute top-0 right-0 w-32 h-32 bg-linear-to-bl from-blue-50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+      
+      <div className="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center mb-10 border border-white shadow-inner group-hover:scale-110 transition-transform duration-700 relative z-10">
+        {React.cloneElement(icon, { size: 36, strokeWidth: 2.5 })}
       </div>
-      <h3 className="text-xl font-black text-slate-900 mb-4">{title}</h3>
-      <p className="text-slate-500 leading-relaxed font-medium text-xs">{desc}</p>
+      
+      <h3 className="text-2xl font-black text-slate-900 mb-5 tracking-tight relative z-10">{title}</h3>
+      <p className="text-slate-500 leading-relaxed font-semibold text-xs relative z-10">{desc}</p>
     </div>
   );
 }

@@ -1,8 +1,15 @@
-import React from 'react';
-import { Code2 } from 'lucide-react';
+import React, { useEffect } from 'react';
+import { Code2, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
-export default function SourceImport({ latexInput, setLatexInput }) {
+export default function SourceImport({ latexInput, setLatexInput, syntaxStatus, handleCheckSyntax }) {
+  // Real-time syntax check with debounce
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (latexInput) handleCheckSyntax();
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, [latexInput]);
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -65,8 +72,22 @@ Hello World
           value={latexInput}
           onChange={(e) => setLatexInput(e.target.value)}
         />
-        <div className="absolute bottom-6 right-6 opacity-40 group-focus-within:opacity-100 transition-opacity">
-           <div className="px-3 py-1 bg-slate-800 rounded-md text-[10px] text-slate-500 font-mono">UTF-8 · LaTeX</div>
+        <div className="absolute bottom-6 right-6 flex items-center space-x-4">
+           {latexInput && (
+             <div className={`flex items-center space-x-2 px-3 py-1.5 rounded-xl border backdrop-blur shadow-sm transition-all duration-500 ${
+               syntaxStatus === 'valid' ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' :
+               syntaxStatus === 'invalid' ? 'bg-rose-500/10 border-rose-500/20 text-rose-400' :
+               'bg-slate-800 border-slate-700 text-slate-500'
+             }`}>
+                {syntaxStatus === 'valid' && <CheckCircle2 size={12} className="text-emerald-500" />}
+                {syntaxStatus === 'invalid' && <AlertCircle size={12} className="text-rose-500" />}
+                {!syntaxStatus && <Loader2 size={12} className="animate-spin" />}
+                <span className="text-[10px] font-black uppercase tracking-[0.1em]">
+                  {syntaxStatus === 'valid' ? 'Syntax Valid' : syntaxStatus === 'invalid' ? 'Syntax Error' : 'Checking Syntax'}
+                </span>
+             </div>
+           )}
+           <div className="px-3 py-1.5 bg-slate-800 rounded-xl text-[10px] text-slate-500 font-mono border border-slate-700">UTF-8 · LaTeX</div>
         </div>
       </div>
 

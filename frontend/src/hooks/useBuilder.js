@@ -33,6 +33,7 @@ export const useBuilder = () => {
   const [aiResult, setAiResult] = useState(null); // { type: string, data: any }
   const [portfolioUrl, setPortfolioUrl] = useState('');
   const [latexInput, setLatexInput] = useState('');
+  const [syntaxStatus, setSyntaxStatus] = useState(null); // null | 'valid' | 'invalid'
 
   // Load from local storage on mount
   useEffect(() => {
@@ -62,10 +63,15 @@ export const useBuilder = () => {
     });
   };
 
+  const [isSyncing, setIsSyncing] = useState(false);
+
   // Save to local storage on data change
   useEffect(() => {
     if (resumeData) {
+      setIsSyncing(true);
       localStorage.setItem('resume_session', JSON.stringify({ resumeData, templateType }));
+      const timer = setTimeout(() => setIsSyncing(false), 1000);
+      return () => clearTimeout(timer);
     }
   }, [resumeData, templateType]);
 
@@ -302,11 +308,26 @@ export const useBuilder = () => {
       jdAnalysis,
       aiResult, setAiResult,
       portfolioUrl, setPortfolioUrl,
-      latexInput, setLatexInput
+      latexInput, setLatexInput,
+      syntaxStatus, setSyntaxStatus
     },
     actions: {
       handleGenerate,
       handleParse,
+      handleCheckSyntax: async () => {
+        if (!latexInput.trim()) {
+           setSyntaxStatus(null);
+           return;
+        }
+        try {
+          const res = await axios.post(`${API_BASE_URL}/api/ai/check-syntax`, { latexCode: latexInput });
+          if (res.data.success) {
+            setSyntaxStatus(res.data.valid ? 'valid' : 'invalid');
+          }
+        } catch (err) {
+          setSyntaxStatus('invalid');
+        }
+      },
       handleQuickJDMatch,
       handleAiAction,
       handlePortfolioAnalyze,

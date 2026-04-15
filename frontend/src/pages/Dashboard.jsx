@@ -6,6 +6,9 @@ import {
   FileText, 
   Plus, 
   Search, 
+  Target,
+  Zap,
+  Briefcase
 } from 'lucide-react';
 import { TEMPLATE_REGISTRY } from '../templates';
 import JobTracker from '../components/dashboard/JobTracker';
@@ -21,12 +24,20 @@ export default function Dashboard() {
   const [activeSubTab, setActiveSubTab] = useState('resumes'); // 'resumes' | 'jobs' | 'templates'
   const [searchQuery, setSearchQuery] = useState('');
 
+  const [stats, setStats] = useState({ totalApplications: 0, avgFit: 0 });
+
   useEffect(() => {
     if (user?.id) {
+      // Fetch resumes
       axios.get(`${API_BASE_URL}/api/resume/list/${user.id}`)
         .then(res => { if (res.data.success) setResumes(res.data.resumes); })
         .catch(() => {})
         .finally(() => setLoading(false));
+
+      // Fetch job stats
+      axios.get(`${API_BASE_URL}/api/jobs/stats/${user.id}`)
+        .then(res => { if (res.data.success) setStats(res.data.stats); })
+        .catch(() => {});
     }
   }, [user]);
 
@@ -69,15 +80,51 @@ export default function Dashboard() {
           {activeSubTab === 'resumes' && (
             <div className="p-8 max-w-6xl mx-auto">
               {/* Welcome Banner */}
-              <div className="mb-10 p-8 bg-white border border-slate-200 rounded-[2.5rem] flex flex-col md:flex-row items-center justify-between relative overflow-hidden shadow-sm">
-                 <div className="absolute top-0 right-0 w-64 h-full bg-linear-to-l from-blue-50 to-transparent -z-10" />
-                 <div className="mb-6 md:mb-0">
-                   <h1 className="text-3xl font-black text-slate-900 mb-2">Welcome back, {user?.firstName || 'Builder'}! 👋</h1>
-                   <p className="text-slate-500 font-medium">You have {resumes.length} active resumes. Ready to land your next role?</p>
+              <div className="mb-10 p-10 bg-slate-900 border border-slate-800 rounded-[3rem] flex flex-col md:flex-row items-center justify-between relative overflow-hidden shadow-2xl">
+                 <div className="absolute top-0 right-0 w-[500px] h-full bg-linear-to-l from-blue-600/20 to-transparent -z-0" />
+                 <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-indigo-600/10 rounded-full blur-[100px]" />
+                 
+                 <div className="mb-8 md:mb-0 relative z-10">
+                   <h1 className="text-4xl font-black text-white mb-3 tracking-tight">Welcome back, {user?.firstName || 'Builder'}! 👋</h1>
+                   <p className="text-slate-400 font-medium text-lg">Your career engine is primed. You have {resumes.length} optimized resumes ready.</p>
                  </div>
-                 <Link to="/builder" className="bg-slate-900 text-white px-8 py-3.5 rounded-2xl font-bold text-lg shadow-xl shadow-slate-200 hover:bg-slate-800 transition flex items-center group">
-                   <Plus size={20} className="mr-2" /> Start New Resume
-                 </Link>
+                 
+                 <div className="relative z-10 flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4">
+                    <Link to="/builder" className="bg-white text-slate-900 px-8 py-4 rounded-2xl font-black text-sm shadow-xl hover:bg-slate-50 transition flex items-center justify-center uppercase tracking-widest">
+                      <Plus size={18} className="mr-2" /> New Resume
+                    </Link>
+                 </div>
+              </div>
+
+              {/* Stats Bar */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12">
+                 <div className="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm flex items-center space-x-4 hover:shadow-md transition">
+                    <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center">
+                       <FileText size={20} />
+                    </div>
+                    <div>
+                       <div className="text-2xl font-black text-slate-900">{resumes.length}</div>
+                       <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Saved Resumes</div>
+                    </div>
+                 </div>
+                 <div className="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm flex items-center space-x-4 hover:shadow-md transition">
+                    <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                       <Briefcase size={20} />
+                    </div>
+                    <div>
+                       <div className="text-2xl font-black text-slate-900">{stats.totalApplications || 0}</div>
+                       <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Active Tracks</div>
+                    </div>
+                 </div>
+                 <div className="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm flex items-center space-x-4 hover:shadow-md transition">
+                    <div className="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center">
+                       <Target size={20} />
+                    </div>
+                    <div>
+                       <div className="text-2xl font-black text-slate-900">{stats.avgFit || 0}%</div>
+                       <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Avg ATS Match</div>
+                    </div>
+                 </div>
               </div>
 
               <div className="flex items-center justify-between mb-6">

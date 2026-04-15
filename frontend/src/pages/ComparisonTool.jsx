@@ -149,7 +149,26 @@ export default function ComparisonTool() {
                       <p className="text-slate-500 font-medium text-lg">{state.jdResult.summary}</p>
                     </div>
                  </div>
-                 <KeywordGroup title="Matched Highlights" items={state.jdResult.matchedKeywords} color="emerald" icon={<CheckCircle2 size={16}/>} />
+                  <div className="space-y-12">
+                     <KeywordGroup title="Matched Highlights" items={state.jdResult.matchedKeywords} color="emerald" icon={<CheckCircle2 size={16}/>} />
+                     
+                     <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+                        <KeywordGroup title="Missing Core Keywords" items={state.jdResult.missingKeywords} color="rose" icon={<XCircle size={16}/>} />
+                        <div className="space-y-4">
+                           <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest flex items-center">
+                             <Sparkles size={16} className="text-amber-500" /> <span className="ml-2">Improvement Roadmap</span>
+                           </h3>
+                           <div className="space-y-3">
+                              {state.jdResult.suggestions?.map((s, i) => (
+                                <div key={i} className="flex items-start space-x-3 p-4 bg-blue-50/50 rounded-2xl border border-blue-100/50">
+                                   <div className="w-5 h-5 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-[10px] font-bold">{i+1}</div>
+                                   <p className="text-xs text-blue-900 font-medium leading-relaxed">{s}</p>
+                                </div>
+                              ))}
+                           </div>
+                        </div>
+                     </div>
+                  </div>
               </div>
             )}
           </div>
@@ -209,8 +228,15 @@ export default function ComparisonTool() {
             {state.compareResult && (
                <div className="animate-slide-up space-y-12 pb-24">
                   <div className="bg-white rounded-[3rem] shadow-2xl border overflow-hidden">
-                    <div className="p-12 text-center border-b bg-linear-to-b from-slate-50 to-white">
-                      <h2 className="text-5xl font-black text-slate-900 tracking-tighter mb-4">{state.compareResult.winner} <span className="text-slate-400 font-medium">Takes the Lead</span></h2>
+                    <div className="p-12 text-center border-b bg-linear-to-b from-slate-50 to-white relative overflow-hidden">
+                      <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-blue-100/20 rounded-full blur-3xl -z-10" />
+                      <div className="inline-flex items-center space-x-2 px-4 py-2 bg-amber-50 rounded-2xl mb-6 border border-amber-100 animate-bounce">
+                         <Trophy size={18} className="text-amber-500 fill-amber-500" />
+                         <span className="text-xs font-black text-amber-700 uppercase tracking-widest">Statistical Winner</span>
+                      </div>
+                      <h2 className="text-5xl font-black text-slate-900 tracking-tighter mb-4">
+                        {state.compareResult.winner} <span className="text-blue-600">Wins!</span>
+                      </h2>
                       <p className="text-slate-500 font-medium text-lg max-w-2xl mx-auto">AI-driven analysis focusing on keyword density, impact quantification, and formatting precision.</p>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 divide-x">

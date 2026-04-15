@@ -45,7 +45,19 @@ class ErrorBoundary extends React.Component {
 function App() {
   return (
     <ErrorBoundary>
-      <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
+      <ClerkProvider 
+        publishableKey={PUBLISHABLE_KEY}
+        appearance={{
+          layout: { socialButtonsPlacement: 'bottom', logoPlacement: 'inside', shimmer: true },
+          variables: { colorPrimary: '#2563EB', fontWeight: { bold: 900, medium: 600 } },
+          elements: {
+            card: "shadow-2xl border border-slate-100 rounded-[2rem]",
+            formButtonPrimary: "bg-slate-900 hover:bg-slate-800 rounded-xl uppercase tracking-widest text-[10px] font-black h-12 transition-all",
+            socialButtonsBlockButton: "rounded-xl border-slate-200 hover:bg-slate-50 transition-all",
+            formFieldInput: "rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-500/20 transition-all"
+          }
+        }}
+      >
         <Toaster position="top-center" />
         <Router>
           <InnerApp />
@@ -72,32 +84,39 @@ function InnerApp() {
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900 font-sans">
-      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-2">
-              <div className="w-10 h-10 rounded-xl bg-linear-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white font-black text-xl shadow-lg ring-4 ring-blue-50">C</div>
-              <Link to="/" className="text-2xl font-black bg-clip-text text-transparent bg-linear-to-r from-blue-600 via-indigo-600 to-cyan-600 tracking-tighter">
-                CareerFlow <span className="text-slate-900">AI</span>
-              </Link>
-            </div>
+      <header className="sticky top-0 z-50 bg-white/60 backdrop-blur-xl border-b border-slate-200/50">
+        <div className="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
+          <div className="flex items-center space-x-3 group cursor-pointer">
+            <div className="w-12 h-12 rounded-2xl bg-linear-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white font-black text-2xl shadow-xl shadow-blue-500/20 ring-4 ring-blue-50 group-hover:scale-110 transition-transform duration-500">C</div>
+            <Link to="/" className="text-2xl font-black bg-clip-text text-transparent bg-linear-to-r from-blue-600 via-indigo-600 to-cyan-600 tracking-tighter">
+              CareerFlow <span className="text-slate-900">AI</span>
+            </Link>
+          </div>
+          
+          <div className="flex items-center space-x-8">
+            <SignedIn>
+              <nav className="hidden md:flex items-center space-x-8">
+                {[
+                  { label: 'Dashboard', path: '/dashboard' },
+                  { label: 'Comparison', path: '/compare' },
+                  { label: 'Builder', path: '/builder' }
+                ].map(link => (
+                  <Link key={link.path} to={link.path} className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 hover:text-blue-600 transition-colors">
+                    {link.label}
+                  </Link>
+                ))}
+              </nav>
+              <div className="w-px h-6 bg-slate-200 mx-2"></div>
+              <UserButton afterSignOutUrl="/" />
+            </SignedIn>
             
-            <div className="flex items-center space-x-6">
-              <SignedOut>
-                <SignInButton mode="modal">
-                  <button className="px-6 py-2.5 rounded-xl text-sm font-black uppercase tracking-widest bg-slate-900 text-white hover:bg-slate-800 transition">Sign In</button>
-                </SignInButton>
-              </SignedOut>
-              <SignedIn>
-                <nav className="hidden md:flex space-x-6">
-                  <Link to="/compare" className="text-xs font-black uppercase tracking-widest text-slate-500 hover:text-blue-600 transition">Compare</Link>
-                  <Link to="/dashboard" className="text-xs font-black uppercase tracking-widest text-slate-500 hover:text-blue-600 transition">Dashboard</Link>
-                  <Link to="/builder" className="text-xs font-black uppercase tracking-widest text-slate-500 hover:text-blue-600 transition">Builder</Link>
-                </nav>
-                <div className="w-px h-6 bg-slate-200 mx-2"></div>
-                <UserButton afterSignOutUrl="/" />
-              </SignedIn>
-            </div>
+            <SignedOut>
+              <SignInButton mode="modal">
+                <button className="px-8 py-3 rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] bg-slate-900 text-white hover:bg-slate-800 transition shadow-xl shadow-slate-200">
+                  Access Portal
+                </button>
+              </SignInButton>
+            </SignedOut>
           </div>
         </div>
       </header>
@@ -139,13 +158,42 @@ function LandingPage() {
         </div>
       </div>
       <Features />
-      <footer className="bg-slate-50 border-t border-slate-200 py-20">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center text-slate-400 text-sm font-black uppercase tracking-widest">
-          <div className="flex items-center space-x-3 mb-8 md:mb-0">
-             <div className="w-12 h-12 rounded-2xl bg-linear-to-tr from-blue-600 to-indigo-600 shadow-xl flex items-center justify-center text-white font-black text-2xl">C</div>
-             <span className="text-slate-900 text-xl tracking-tighter">CareerFlow AI</span>
+      <footer className="bg-slate-900 py-24 border-t border-slate-800">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-20">
+            <div className="col-span-1 md:col-span-2 space-y-6">
+              <div className="flex items-center space-x-3">
+                <div className="w-12 h-12 rounded-2xl bg-linear-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white font-black text-2xl shadow-xl">C</div>
+                <span className="text-white text-3xl font-black tracking-tighter">CareerFlow AI</span>
+              </div>
+              <p className="text-slate-400 text-lg max-w-sm font-medium leading-relaxed">
+                Empowering the next generation of engineers with high-fidelity, AI-optimized carrier tools. Built on the power of LaTeX.
+              </p>
+            </div>
+            <div>
+              <h4 className="text-white font-black text-[10px] uppercase tracking-[0.2em] mb-6">Product</h4>
+              <ul className="space-y-4 text-sm font-bold text-slate-500 underline-offset-4 decoration-blue-500">
+                <li className="hover:text-blue-400 cursor-pointer transition">Resume Builder</li>
+                <li className="hover:text-blue-400 cursor-pointer transition">JD Matcher</li>
+                <li className="hover:text-blue-400 cursor-pointer transition">LaTeX Parser</li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="text-white font-black text-[10px] uppercase tracking-[0.2em] mb-6">Connect</h4>
+              <ul className="space-y-4 text-sm font-bold text-slate-500">
+                <li className="hover:text-blue-400 cursor-pointer transition">LinkedIn</li>
+                <li className="hover:text-blue-400 cursor-pointer transition">GitHub</li>
+                <li className="hover:text-blue-400 cursor-pointer transition">Support</li>
+              </ul>
+            </div>
           </div>
-          <div className="mt-8 md:mt-0 text-[10px]">© 2024 CareerFlow AI. Developed for Excellence.</div>
+          <div className="pt-12 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">
+            <div>© 2024 CareerFlow AI. Built for the Tech Elite.</div>
+            <div className="mt-4 md:mt-0 flex items-center bg-slate-800/50 px-4 py-2 rounded-xl backdrop-blur">
+              <div className="w-2 h-2 rounded-full bg-emerald-500 mr-3 animate-pulse"></div>
+              All Systems Operational
+            </div>
+          </div>
         </div>
       </footer>
     </div>

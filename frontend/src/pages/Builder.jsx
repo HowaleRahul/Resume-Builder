@@ -101,6 +101,7 @@ export default function Builder() {
       <BuilderHeader 
         {...state} 
         {...actions} 
+        isSyncing={state.isSyncing}
         handleDownloadPdf={handleDownloadPdf}
         TEMPLATE_REGISTRY={TEMPLATE_REGISTRY}
       />
@@ -110,6 +111,8 @@ export default function Builder() {
           <SourceImport 
             latexInput={state.latexInput} 
             setLatexInput={state.setLatexInput} 
+            syntaxStatus={state.syntaxStatus}
+            handleCheckSyntax={actions.handleCheckSyntax}
           />
         )}
 
