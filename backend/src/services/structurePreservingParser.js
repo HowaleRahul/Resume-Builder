@@ -287,6 +287,7 @@ class StructurePreservingParser {
     }
 
     logger.info('LaTeX regenerated with preserved structure');
+    return latex;
   }
 
   /**

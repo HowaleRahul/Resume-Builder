@@ -133,6 +133,8 @@ export default function Builder() {
               resumeData={state.resumeData}
               setResumeData={state.setResumeData}
               updatePersonal={actions.updatePersonal}
+              onEnhanceBullet={actions.handleEnhanceBullet}
+              loadingStates={state.loadingStates}
             />
           )
         )}

@@ -3,7 +3,7 @@ import { FileText, Sparkles, Code2, Plus, Trash2, XCircle } from 'lucide-react';
 import InputField from '../ui/InputField';
 import ExperienceEditor from '../editor/ExperienceEditor';
 
-export default function VisualEditor({ resumeData, setResumeData, updatePersonal }) {
+export default function VisualEditor({ resumeData, setResumeData, updatePersonal, onEnhanceBullet, loadingStates }) {
   if (!resumeData) return (
     <div className="absolute inset-0 flex items-center justify-center bg-slate-50">
       <div className="text-center">
@@ -75,6 +75,8 @@ export default function VisualEditor({ resumeData, setResumeData, updatePersonal
               setResumeData({...resumeData, experience: n});
             }} 
             onAddRole={() => setResumeData({...resumeData, experience: [...(resumeData.experience || []), { title: '', companyOrInst: '', date: '', location: '', url: '', bullets: [''] }]})}
+            onEnhance={onEnhanceBullet}
+            loadingStates={loadingStates}
           />
         </div>
 
