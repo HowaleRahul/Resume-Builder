@@ -27,7 +27,7 @@ export default function Hero() {
           </h1>
           
           <p className="text-xl text-slate-500 max-w-2xl mx-auto mb-14 leading-relaxed font-medium">
-            Stop fighting LaTeX templates. LatentCV parses your expertise into high-fidelity, ATS-optimized PDFs tailored for the world's elite engineering teams.
+            Stop fighting LaTeX templates. ResumeForge AI parses your expertise into high-fidelity, ATS-optimized PDFs tailored for the world's elite engineering teams.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-24">

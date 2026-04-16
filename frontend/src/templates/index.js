@@ -720,7 +720,7 @@ const TEMPLATE_PROFESSIONAL = `\\documentclass[10pt, letterpaper]{article}
 \\usepackage[
     pdftitle={{{name}}'s CV},
     pdfauthor={{{name}}},
-    pdfcreator={LaTeX with LatentCV},
+    pdfcreator={LaTeX with ResumeForge AI},
     colorlinks=true,
     urlcolor=primaryColor
 ]{hyperref}

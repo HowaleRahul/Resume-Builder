@@ -33,7 +33,7 @@ class ErrorBoundary extends React.Component {
       return (
         <div className="min-h-screen flex items-center justify-center bg-slate-50 p-8 text-center flex-col">
           <h2 className="text-3xl font-black text-slate-900 mb-4">Something went wrong.</h2>
-          <p className="text-slate-500 mb-8 max-w-md">The LatentCV Suite encountered an unexpected error. Please refresh the page.</p>
+          <p className="text-slate-500 mb-8 max-w-md">The ResumeForge AI Suite encountered an unexpected error. Please refresh the page.</p>
           <button onClick={() => window.location.reload()} className="px-8 py-3 bg-blue-600 text-white rounded-xl font-black uppercase tracking-widest hover:bg-blue-700 transition">Restore Workspace</button>
         </div>
       );
@@ -164,7 +164,7 @@ function LandingPage() {
             <div className="col-span-1 md:col-span-2 space-y-6">
               <div className="flex items-center space-x-3">
                 <div className="w-12 h-12 rounded-2xl bg-linear-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white font-black text-2xl shadow-xl">L</div>
-                <span className="text-white text-3xl font-black tracking-tighter">LatentCV</span>
+                <span className="text-white text-3xl font-black tracking-tighter">ResumeForge AI</span>
               </div>
               <p className="text-slate-400 text-lg max-w-sm font-medium leading-relaxed">
                 Empowering the next generation of engineers with high-fidelity, AI-optimized carrier tools. Built on the power of LaTeX.
@@ -188,7 +188,7 @@ function LandingPage() {
             </div>
           </div>
           <div className="pt-12 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">
-            <div>© 2024 LatentCV. Built for the Tech Elite.</div>
+            <div>© 2024 ResumeForge AI. Built for the Tech Elite.</div>
             <div className="mt-4 md:mt-0 flex items-center bg-slate-800/50 px-4 py-2 rounded-xl backdrop-blur">
               <div className="w-2 h-2 rounded-full bg-emerald-500 mr-3 animate-pulse"></div>
               All Systems Operational

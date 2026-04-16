@@ -1,65 +1,67 @@
-# 🚀 CareerFlow AI
+# ResumeForge AI
 
-**CareerFlow AI** is a premium, production-ready AI-powered career management suite. It helps engineers and developers build ATS-optimized LaTeX resumes, track job applications with a Kanban board, and analyze their portfolio for skill gaps.
+**ResumeForge AI** is a full-stack resume builder designed to help users create polished, professional resumes with AI-assisted content generation and real-time previewing.
 
-## ✨ Core Features
+## 🚀 Project Overview
 
--   **🤖 AI Resume Architect**: Generate high-fidelity LaTeX resumes from raw text or PDFs. Powered by Google Gemini.
--   **📊 Job Application Tracker**: Manage your interview pipeline with a modern, interactive Kanban board.
--   **🔍 Head-to-Head Comparison**: Compare your resume against Job Descriptions to get a real-time ATS compatibility score.
--   **📈 Skill Gap Analysis**: Get actionable advice on what certifications or technologies you need to land your dream role.
--   **🔗 Portfolio Intelligence**: Sync your GitHub or personal portfolio to auto-extract and format impactful projects.
+This repository contains a modern resume-building application with a React frontend and a Node.js backend. Users can build resumes with AI-powered assistance, generate PDFs, and manage resume data with an intuitive interface.
 
-## 🛠️ Tech Stack
+## ✨ Features
 
--   **Frontend**: React, Vite, Tailwind CSS, Lucide React, Clerk (Auth).
--   **Backend**: Node.js, Express, MongoDB, Mongoose.
--   **AI**: Google Generative AI (Gemini Pro).
--   **Export**: Native Browser Print Engine (PDF) & Raw LaTeX (.tex).
+- AI-assisted resume content creation
+- Resume preview and PDF generation
+- Frontend built with React, Vite, Tailwind CSS, and Zustand
+- Backend built with Express, MongoDB, and AI integration
+- Secure request handling with Helmet, CORS, and rate limiting
+- Modular architecture with separate frontend and backend workspaces
 
-## 🚀 Getting Started
+## 🧱 Tech Stack
 
-### Prerequisites
+- Frontend: React, Vite, Tailwind CSS, Zustand
+- Backend: Node.js, Express, MongoDB, Mongoose
+- AI: Google Generative AI / OpenAI-style assistance
+- PDF & LaTeX generation: `node-latex`, `pdf-parse`
+- Deployment-ready with Vercel-compatible structure
 
--   Node.js (v18+)
--   MongoDB Instance (Local or Atlas)
--   Clerk Account (for Authentication)
--   Gemini API Key
+## 📁 Repository Structure
 
-### Installation
+- `frontend/` - React application and UI
+- `backend/` - Express API, AI services, and resume generation logic
+- `package.json` - Root workspace configuration
 
-1.  **Clone the repository**:
-    ```bash
-    git clone https://github.com/HowaleRahul/Resume-Builder.git
-    cd Resume-Builder
-    ```
+## ⚙️ Setup
 
-2.  **Setup Backend**:
-    ```bash
-    cd backend
-    npm install
-    cp .env.example .env # Add your MONGO_URI and GEMINI_API_KEY
-    npm run dev
-    ```
+1. Install dependencies for both frontend and backend:
 
-3.  **Setup Frontend**:
-    ```bash
-    cd ../frontend
-    npm install
-    cp .env.example .env # Add your VITE_CLERK_PUBLISHABLE_KEY
-    npm run dev
-    ```
+```bash
+npm run install
+```
 
-## 📄 Deployment
+2. Start the development servers:
 
-Designed to be deployed on **Vercel** or **Netlify**.
+```bash
+npm run dev
+```
 
--   **Frontend**: Connect your GitHub repo to Vercel. Set `VITE_CLERK_PUBLISHABLE_KEY`.
--   **Backend**: Deploy as a separate service (e.g., Render, Railway) or as Serverless Functions. Update the `axios` base URL in the frontend.
+3. Open the frontend URL shown in the terminal and start building resumes.
 
-## 🤝 Contributing
+## 🧪 Build
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+To build both frontend and backend workspaces:
+
+```bash
+npm run build
+```
+
+## 📌 Notes
+
+- Configure environment variables in `frontend/.env` and `backend/.env` before running production or AI-related features.
+- The backend uses a separate `backend` package with its own startup script.
+
+## 💡 Recommended Project Name
+
+The project is now named **ResumeForge AI**, which reflects the goal of crafting strong career documents using AI support.
 
 ---
-Developed with ❤️ by **Rahul Howale**.
+
+If you want, I can also add a short `CONTRIBUTING.md` or `ENVIRONMENT.md` file for setup details. 
