@@ -15,6 +15,7 @@ import JobTracker from '../components/dashboard/JobTracker';
 import Sidebar from '../components/dashboard/Sidebar';
 import ResumeCard from '../components/dashboard/ResumeCard';
 import TemplateCard from '../components/dashboard/TemplateCard';
+import SettingsView from '../components/dashboard/SettingsView';
 import API_BASE_URL from '../config/api';
 
 export default function Dashboard() {
@@ -184,6 +185,8 @@ export default function Dashboard() {
                 </div>
              </div>
           )}
+
+          {activeSubTab === 'settings' && <SettingsView />}
 
           <div className="pb-20" />
         </div>
