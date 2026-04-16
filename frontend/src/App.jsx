@@ -89,7 +89,7 @@ function InnerApp() {
           <div className="flex items-center space-x-3 group cursor-pointer">
             <div className="w-12 h-12 rounded-2xl bg-linear-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white font-black text-2xl shadow-xl shadow-blue-500/20 ring-4 ring-blue-50 group-hover:scale-110 transition-transform duration-500">L</div>
             <Link to="/" className="text-2xl font-black bg-clip-text text-transparent bg-linear-to-r from-blue-600 via-indigo-600 to-cyan-600 tracking-tighter">
-              Latent<span className="text-slate-900">CV</span>
+              ResumeForge AI
             </Link>
           </div>
           

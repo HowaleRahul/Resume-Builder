@@ -59,8 +59,11 @@ export default function Builder() {
   }, [location.search]);
 
   const handleDownloadPdf = () => {
-    toast.success("Opening Print Dialogue... Use 'Save as PDF' in the destination.", { duration: 4000 });
-    window.print();
+    if (actions.handleDownloadPdf) {
+      actions.handleDownloadPdf();
+    } else {
+      toast.error('PDF download is not available yet.');
+    }
   };
 
   const handleDownloadSource = () => {

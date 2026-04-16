@@ -34,6 +34,7 @@ const ResumeSchema = new mongoose.Schema({
   // Storage fields
   originalLatexCode: String,
   generatedLatexCode: String,
+  latexStructure: String,
   templateType: {
     type: String,
     default: 'moderncv'

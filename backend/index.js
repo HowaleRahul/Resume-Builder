@@ -13,9 +13,9 @@ const requestLogger = require('./src/middleware/requestLogger');
 console.log('🚀 ResumeForge AI: Initialization sequence started...');
 
 // Environment Critical Check
-if (!process.env.GEMINI_API_KEY) {
-  logger.error('CRITICAL: GEMINI_API_KEY is missing in .env. AI features will fail.');
-  process.exit(1);
+const hasGeminiKey = Boolean(process.env.GEMINI_API_KEY);
+if (!hasGeminiKey) {
+  logger.warn('GEMINI_API_KEY is missing in .env. AI features will be disabled, but core resume parsing and PDF compilation will still work.');
 }
 
 // Database Configuration

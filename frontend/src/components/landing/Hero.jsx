@@ -7,9 +7,9 @@ export default function Hero() {
   return (
     <section className="relative pt-32 pb-44 overflow-hidden bg-white">
       {/* Abstract Background Elements */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[800px] pointer-events-none">
-        <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-blue-100/30 rounded-full blur-[120px] -translate-y-1/2 animate-pulse" />
-        <div className="absolute top-1/4 right-1/4 w-[400px] h-[400px] bg-indigo-100/20 rounded-full blur-[100px] animate-pulse delay-1000" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-200 pointer-events-none">
+        <div className="absolute top-0 left-1/4 w-150 h-150 bg-blue-100/30 rounded-full blur-3xl -translate-y-1/2 animate-pulse" />
+        <div className="absolute top-1/4 right-1/4 w-100 h-100 bg-indigo-100/20 rounded-full blur-2xl animate-pulse delay-1000" />
       </div>
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
@@ -52,7 +52,7 @@ export default function Hero() {
 
           {/* Floating Feature Badges */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-4xl">
-             <div className="flex items-center space-x-4 p-6 bg-slate-50/50 rounded-[2rem] border border-slate-100/50 backdrop-blur">
+             <div className="flex items-center space-x-4 p-6 bg-slate-50/50 rounded-4xl border border-slate-100/50 backdrop-blur">
                 <div className="w-12 h-12 rounded-2xl bg-white shadow-sm flex items-center justify-center text-blue-600">
                    <Target size={20} />
                 </div>
@@ -61,7 +61,7 @@ export default function Hero() {
                    <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">ATS Pass Rate</div>
                 </div>
              </div>
-             <div className="flex items-center space-x-4 p-6 bg-slate-50/50 rounded-[2rem] border border-slate-100/50 backdrop-blur">
+             <div className="flex items-center space-x-4 p-6 bg-slate-50/50 rounded-4xl border border-slate-100/50 backdrop-blur">
                 <div className="w-12 h-12 rounded-2xl bg-white shadow-sm flex items-center justify-center text-emerald-600">
                    <ShieldCheck size={20} />
                 </div>
@@ -70,7 +70,7 @@ export default function Hero() {
                    <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">LaTeX Structure</div>
                 </div>
              </div>
-             <div className="flex items-center space-x-4 p-6 bg-slate-50/50 rounded-[2rem] border border-slate-100/50 backdrop-blur">
+             <div className="flex items-center space-x-4 p-6 bg-slate-50/50 rounded-4xl border border-slate-100/50 backdrop-blur">
                 <div className="w-12 h-12 rounded-2xl bg-white shadow-sm flex items-center justify-center text-amber-500">
                    <Zap size={20} />
                 </div>

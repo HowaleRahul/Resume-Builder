@@ -14,7 +14,18 @@ exports.enhanceResumeText = async (req, res) => {
     });
   } catch (err) {
     logger.error("AI Improvement failed", { error: err.message });
-    res.status(500).json({ success: false, message: 'AI Improvement failed', details: err.message });
+    // Provide fallback suggestions
+    const fallback = [
+      "Enhanced version: " + (req.body.text || "").replace(/\b(i|me|my)\b/gi, "the candidate"),
+      "Improved: " + (req.body.text || "").replace(/\b(managed|led|developed)\b/gi, "successfully $&"),
+      "Optimized: " + (req.body.text || "").replace(/\b(\d+)%?\b/g, "over $1")
+    ];
+    res.json({ 
+      success: true, 
+      suggestions: fallback, 
+      improvedText: fallback[0],
+      note: "AI service temporarily unavailable, using fallback suggestions"
+    });
   }
 };
 

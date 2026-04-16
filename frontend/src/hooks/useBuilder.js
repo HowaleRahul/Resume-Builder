@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
@@ -63,15 +63,10 @@ export const useBuilder = () => {
     });
   };
 
-  const [isSyncing, setIsSyncing] = useState(false);
-
   // Save to local storage on data change
   useEffect(() => {
     if (resumeData) {
-      setIsSyncing(true);
       localStorage.setItem('resume_session', JSON.stringify({ resumeData, templateType }));
-      const timer = setTimeout(() => setIsSyncing(false), 1000);
-      return () => clearTimeout(timer);
     }
   }, [resumeData, templateType]);
 
@@ -87,7 +82,11 @@ export const useBuilder = () => {
       if (res.data.success) {
         setGeneratedLatex(res.data.latexCode);
         setPreviewCode(res.data.latexCode);
-        toast.success("Resume Compiled Successfully!");
+        
+        const msg = res.data.hasStructure 
+          ? "Resume regenerated with original formatting preserved! 🌟" 
+          : "Resume generated from template 📄";
+        toast.success(msg);
       }
     } catch (err) {
       setCompileError({
@@ -95,6 +94,38 @@ export const useBuilder = () => {
         log: err.response?.data?.error || "Check your LaTeX syntax"
       });
       toast.error("Compilation Error");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDownloadPdf = async () => {
+    const latexCode = previewCode || generatedLatex;
+    if (!latexCode) {
+      toast.error("No LaTeX source available for PDF download.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await axios.post(`${API_BASE_URL}/api/resume/compile`, { latexCode }, {
+        responseType: 'blob'
+      });
+
+      const blob = new Blob([response.data], { type: 'application/pdf' });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'resume.pdf';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+
+      toast.success('PDF downloaded successfully!');
+    } catch (err) {
+      console.error('PDF download failed:', err);
+      toast.error('Failed to download PDF. Try again or use the preview fallback.');
     } finally {
       setLoading(false);
     }
@@ -145,6 +176,14 @@ export const useBuilder = () => {
         bullets: Array.isArray(p.bullets) ? p.bullets : []
       })) : []
     };
+
+    if (data.latexStructure && typeof data.latexStructure === 'string') {
+      sanitized.latexStructure = data.latexStructure;
+    }
+    if (data.originalLatexCode && typeof data.originalLatexCode === 'string') {
+      sanitized.originalLatexCode = data.originalLatexCode;
+    }
+
     return sanitized;
   };
 
@@ -160,17 +199,26 @@ export const useBuilder = () => {
       if (res.data.success) {
         const validated = validateResumeData(res.data.data);
         if (validated) {
+          if (res.data.data.latexStructure) validated.latexStructure = res.data.data.latexStructure;
+          if (res.data.data.originalLatexCode) validated.originalLatexCode = res.data.data.originalLatexCode;
+
           setResumeData(validated);
+          setGeneratedLatex(res.data.data.latexStructure || '');
+          setPreviewCode(res.data.data.latexStructure || '');
           setActiveTab('edit');
-          toast.success("Resume Parsed Successfully!");
+          
+          const msg = res.data.hasStructure 
+            ? "LaTeX parsed! Original formatting will be preserved. ✅" 
+            : "LaTeX parsed successfully!";
+          toast.success(msg);
         } else {
           console.warn("⚠️ AI VALIDATION FAILED. Structure:", res.data.data);
           throw new Error("Invalid structure returned");
         }
       }
-    } catch (err) {
-      console.error("❌ PARSE FAILED:", err);
-      const details = err.response?.data?.details || err.message;
+    } catch (error) {
+      console.error("❌ PARSE FAILED:", error);
+      const details = error.response?.data?.details || error.message;
       toast.error(`Parsing failed: ${details}`);
     } finally {
       setLoading(false);
@@ -189,7 +237,7 @@ export const useBuilder = () => {
         setJdAnalysis(res.data);
         toast.success("ATS Analysis Ready!");
       }
-    } catch (err) {
+    } catch {
       toast.error("Analysis failed.");
     } finally {
       setLoadingStates(prev => ({ ...prev, jdMatch: false }));
@@ -232,7 +280,7 @@ export const useBuilder = () => {
         setAiResult({ type: actionType, data: displayData });
         toast.success(`${actionType.replace('-',' ')} generated!`, { icon: '🤖' });
       }
-    } catch (err) {
+    } catch {
       toast.error(`${actionType} failed.`);
     } finally {
       setLoadingStates(prev => ({ ...prev, [loadingKey]: false }));
@@ -248,7 +296,7 @@ export const useBuilder = () => {
         setAiResult({ type: 'portfolio-extraction', data: res.data.extractedData });
         toast.success("Portfolio Analyzed!");
       }
-    } catch (err) {
+    } catch {
       toast.error("Portfolio analysis failed.");
     } finally {
       setLoadingStates(prev => ({ ...prev, analyzingPortfolio: false }));
@@ -279,7 +327,7 @@ export const useBuilder = () => {
         setResumeData(newData);
         toast.success("Bullet point enhanced!", { icon: '✨' });
       }
-    } catch (err) {
+    } catch {
       toast.error("AI Enhancement failed");
     } finally {
       setLoadingStates(prev => ({ ...prev, enhancingBullet: null }));
@@ -324,13 +372,14 @@ export const useBuilder = () => {
           if (res.data.success) {
             setSyntaxStatus(res.data.valid ? 'valid' : 'invalid');
           }
-        } catch (err) {
+        } catch {
           setSyntaxStatus('invalid');
         }
       },
       handleQuickJDMatch,
       handleAiAction,
       handlePortfolioAnalyze,
+      handleDownloadPdf,
       updatePersonal,
       handleEnhanceBullet,
       handleResetTemplate

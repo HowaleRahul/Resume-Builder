@@ -249,7 +249,7 @@ export default function ComparisonTool() {
                   {state.compareInputMode === 'latex' && state.resumeAText.includes('\\documentclass') && (
                     <div className="space-y-6">
                       <h3 className="text-lg font-black text-slate-900 uppercase tracking-widest text-center">Visual Benchmarking</h3>
-                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 h-[700px]">
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 h-175">
                          <div className="bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-200 flex flex-col">
                             <div className="p-3 bg-slate-900 text-white flex justify-between items-center px-6">
                                <span className="text-[10px] font-black uppercase tracking-widest">{state.resumeALabel} PDF Preview</span>

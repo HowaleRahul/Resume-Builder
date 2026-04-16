@@ -104,7 +104,7 @@ export default function SettingsView() {
       <section className="bg-rose-50/50 rounded-[3rem] border border-rose-100 p-10">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center space-x-6">
-            <div className="w-16 h-16 rounded-[2rem] bg-rose-100 text-rose-600 flex items-center justify-center shadow-inner">
+            <div className="w-16 h-16 rounded-4xl bg-rose-100 text-rose-600 flex items-center justify-center shadow-inner">
                <Shield size={32} />
             </div>
             <div>

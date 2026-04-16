@@ -82,7 +82,7 @@ export default function Dashboard() {
             <div className="p-8 max-w-6xl mx-auto">
               {/* Welcome Banner */}
               <div className="mb-10 p-10 bg-slate-900 border border-slate-800 rounded-[3rem] flex flex-col md:flex-row items-center justify-between relative overflow-hidden shadow-2xl">
-                 <div className="absolute top-0 right-0 w-[500px] h-full bg-linear-to-l from-blue-600/20 to-transparent -z-0" />
+                 <div className="absolute top-0 right-0 w-125 h-full bg-linear-to-l from-blue-600/20 to-transparent z-0" />
                  <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-indigo-600/10 rounded-full blur-[100px]" />
                  
                  <div className="mb-8 md:mb-0 relative z-10">
@@ -99,7 +99,7 @@ export default function Dashboard() {
 
               {/* Stats Bar */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12">
-                 <div className="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm flex items-center space-x-4 hover:shadow-md transition">
+                 <div className="bg-white p-6 rounded-4xl border border-slate-200 shadow-sm flex items-center space-x-4 hover:shadow-md transition">
                     <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center">
                        <FileText size={20} />
                     </div>
@@ -108,7 +108,7 @@ export default function Dashboard() {
                        <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Saved Resumes</div>
                     </div>
                  </div>
-                 <div className="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm flex items-center space-x-4 hover:shadow-md transition">
+                 <div className="bg-white p-6 rounded-4xl border border-slate-200 shadow-sm flex items-center space-x-4 hover:shadow-md transition">
                     <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
                        <Briefcase size={20} />
                     </div>
@@ -117,7 +117,7 @@ export default function Dashboard() {
                        <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Active Tracks</div>
                     </div>
                  </div>
-                 <div className="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm flex items-center space-x-4 hover:shadow-md transition">
+                 <div className="bg-white p-6 rounded-4xl border border-slate-200 shadow-sm flex items-center space-x-4 hover:shadow-md transition">
                     <div className="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center">
                        <Target size={20} />
                     </div>
@@ -137,7 +137,7 @@ export default function Dashboard() {
               {loading ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {[1,2,3].map(i => (
-                    <div key={i} className="bg-white rounded-[2rem] border border-slate-100 p-6 space-y-4 animate-pulse">
+                    <div key={i} className="bg-white rounded-4xl border border-slate-100 p-6 space-y-4 animate-pulse">
                       <div className="flex justify-between items-start">
                         <div className="space-y-2">
                           <div className="h-5 w-32 bg-slate-100 rounded-lg"></div>

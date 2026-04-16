@@ -1,11 +1,32 @@
-/**
- * Generates standard LaTeX code from JSON resume data.
- */
-function generateLatex(json, template = 'moderncv') {
-  if (template === 'standard') return generateStandard(json);
-  if (template === 'awesome-cv') return generateAwesomeCV(json);
+const logger = require('../utils/logger');
+const StructurePreservingParser = require('./structurePreservingParser');
 
-  // Default: Base preamble for a moderncv template
+/**
+ * STRUCTURE-PRESERVING LATEX GENERATION
+ * 
+ * Key Principle: If user parses LaTeX and edits data in visual editor,
+ * the regenerated LaTeX should only have VALUES changed, NOT the structure.
+ * 
+ * This ensures the original formatting/styling is preserved!
+ */
+
+function generateLatex(json, template = 'moderncv') {
+  // If structure is preserved from original LaTeX, use it
+  if (json.latexStructure) {
+    logger.info('✅ Regenerating LaTeX with PRESERVED STRUCTURE - only values changed');
+    return StructurePreservingParser.regenerate(json);
+  }
+
+  // Fallback: Generate standard LaTeX when no original structure exists
+  logger.info('📝 Generating standard LaTeX template');
+  return generateStandardLatex(json);
+}
+
+/**
+ * Generate standard LaTeX code from JSON resume data.
+ * Used when no original structure is available (new resumes).
+ */
+function generateStandardLatex(json) {
   let latex = `\\documentclass[11pt,a4paper,sans]{moderncv}
 \\moderncvstyle{classic}
 \\moderncvcolor{blue}
@@ -104,9 +125,8 @@ function generateLatex(json, template = 'moderncv') {
   return latex;
 }
 
-
 /**
- * Escapes characters that are special in LaTeX.
+ * Escapes special LaTeX characters
  */
 function escapeLatex(str) {
   if (!str) return '';
@@ -121,126 +141,6 @@ function escapeLatex(str) {
     .replace(/}/g, '\\}')
     .replace(/~/g, '\\textasciitilde{}')
     .replace(/\^/g, '\\textasciicircum{}');
-}
-
-/**
- * Generates Standard Article style LaTeX code.
- */
-function generateStandard(json) {
-  let latex = `\\documentclass[10pt,a4paper]{article}
-\\usepackage[utf8]{inputenc}
-\\usepackage{geometry}
-\\geometry{a4paper, margin=1in}
-\\usepackage{titlesec}
-\\titleformat{\\section}{\\large\\bfseries}{}{0em}{}[\\titlerule]
-\\begin{document}
-\\begin{center}
-`;
-  if (json.personal) {
-     if (json.personal.name) latex += `{\\huge \\textbf{${escapeLatex(json.personal.name)}}} \\\\[0.5em]\n`;
-     latex += `${escapeLatex(json.personal.email || '')} | ${escapeLatex(json.personal.phone || '')} | ${escapeLatex(json.personal.location || '')}\n`;
-  }
-  latex += `\\end{center}\n\n`;
-
-  if (json.education && json.education.length > 0) {
-    latex += `\\section*{Education}\n\\begin{itemize}\n`;
-    json.education.forEach(edu => {
-      latex += `\\item \\textbf{${escapeLatex(edu.title || '')}}, ${escapeLatex(edu.companyOrInst || '')} \\hfill ${escapeLatex(edu.date || '')}\n`;
-    });
-    latex += `\\end{itemize}\n\n`;
-  }
-
-  if (json.experience && json.experience.length > 0) {
-    latex += `\\section*{Experience}\n`;
-    json.experience.forEach(exp => {
-      latex += `\\noindent \\textbf{${escapeLatex(exp.title || '')}} \\hfill ${escapeLatex(exp.date || '')} \\\\
-\\textit{${escapeLatex(exp.companyOrInst || '')}} \\hfill ${escapeLatex(exp.location || '')}
-`;
-      if (exp.bullets && exp.bullets.length > 0) {
-        latex += `\\begin{itemize} \n`;
-        exp.bullets.forEach(b => {
-           if (b.trim()) latex += `\\item ${escapeLatex(b.trim())}\n`;
-        });
-        latex += `\\end{itemize}\n`;
-      } else if (exp.description) {
-         // legacy support
-         latex += `${escapeLatex(exp.description)}\n`;
-      }
-      latex += `\\vspace{0.5em}\n`;
-    });
-  }
-
-  if (json.projects && json.projects.length > 0) {
-    latex += `\\section*{Projects}\n`;
-    json.projects.forEach(proj => {
-      latex += `\\noindent \\textbf{${escapeLatex(proj.title || '')}} \\hfill ${escapeLatex(proj.techStack || '')}\n`;
-      if (proj.bullets && proj.bullets.length > 0) {
-        latex += `\\begin{itemize} \n`;
-        proj.bullets.forEach(b => {
-           if (b.trim()) latex += `\\item ${escapeLatex(b.trim())}\n`;
-        });
-        latex += `\\end{itemize}\n`;
-      }
-      latex += `\\vspace{0.5em}\n`;
-    });
-  }
-
-  if (json.skills && json.skills.length > 0) {
-    latex += `\\section*{Skills}\n\\begin{itemize}\n`;
-    json.skills.forEach(skill => {
-        if (skill.category && Array.isArray(skill.items)) {
-            latex += `\\item \\textbf{${escapeLatex(skill.category)}}: ${escapeLatex(skill.items.join(', '))}\n`;
-        } else if (skill.text) {
-            latex += `\\item ${escapeLatex(skill.text)}\n`;
-        }
-    });
-    latex += `\\end{itemize}\n\n`;
-  }
-
-  latex += `\\end{document}\n`;
-  return latex;
-}
-
-/**
- * Generates Awesome-CV style LaTeX code.
- */
-function generateAwesomeCV(json) {
-  let latex = `\\documentclass[11pt, a4paper]{awesome-cv}
-\\geometry{left=1.4cm, top=.8cm, right=1.4cm, bottom=1.8cm, footskip=.5cm}
-\\fontdir[fonts/]
-\\colorlet{awesome}{awesome-red}
-\\setbool{acvSectionColorHighlight}{true}
-`;
-  if (json.personal) {
-     const parts = (json.personal.name || '').split(' ');
-     latex += `\\name{${parts[0] || ''}}{${parts.slice(1).join(' ') || ''}}\n`;
-     if (json.personal.phone) latex += `\\mobile{${escapeLatex(json.personal.phone)}}\n`;
-     if (json.personal.email) latex += `\\email{${escapeLatex(json.personal.email)}}\n`;
-     if (json.personal.location) latex += `\\position{${escapeLatex(json.personal.location)}}\n`;
-  }
-  latex += `\\begin{document}\n\\makecvheader\n\\makecvfooter{\\today}{${escapeLatex(json.personal?.name || '')}~~~·~~~Resume}{\\thepage}\n\n`;
-
-  if (json.experience && json.experience.length > 0) {
-    latex += `\\cvsection{Work Experience}\n\\begin{cventries}\n`;
-    json.experience.forEach(exp => {
-      latex += `  \\cventry\n    {${escapeLatex(exp.title || '')}}\n    {${escapeLatex(exp.companyOrInst || '')}}\n    {${escapeLatex(exp.location || '')}}\n    {${escapeLatex(exp.date || '')}}\n    {`;
-      if (exp.bullets && exp.bullets.length > 0) {
-         latex += `\n      \\begin{cvitems}\n`;
-         exp.bullets.forEach(b => {
-             if (b.trim()) latex += `        \\item {${escapeLatex(b.trim())}}\n`;
-         });
-         latex += `      \\end{cvitems}\n    }\n`;
-      } else if (exp.description) {
-         latex += `\n      \\begin{cvitems}\n        \\item {${escapeLatex(exp.description)}}\n      \\end{cvitems}\n    }\n`;
-      } else {
-         latex += `}\n`;
-      }
-    });
-    latex += `\\end{cventries}\n\n`;
-  }
-
-  latex += `\\end{document}\n`;
-  return latex;
 }
 
 module.exports = { generateLatex };
