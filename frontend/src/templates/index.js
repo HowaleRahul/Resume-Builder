@@ -922,6 +922,7 @@ export const TEMPLATE_REGISTRY = {
     color: 'from-blue-100 to-indigo-50',
     compat: 'online',
     desc: 'Minimal article-style with social icons and tabular skill layout.',
+    thumbnail: '/thumbnails/jitin-nair.png',
     code: TEMPLATE_JITIN,
   },
   'anubhav-singh': {
@@ -932,6 +933,7 @@ export const TEMPLATE_REGISTRY = {
     color: 'from-rose-50 to-orange-50',
     compat: 'online',
     desc: 'Classic tech resume with subheading macros, perfect for SWE roles.',
+    thumbnail: '/thumbnails/anubhav-singh.png',
     code: TEMPLATE_ANUBHAV,
   },
   'jake': {
@@ -942,6 +944,7 @@ export const TEMPLATE_REGISTRY = {
     color: 'from-emerald-50 to-teal-50',
     compat: 'online',
     desc: 'The most-used resume template on Overleaf. Clean, ATS-friendly layout.',
+    thumbnail: '/thumbnails/jake.png',
     code: TEMPLATE_JAKE,
   },
   'two-column': {
@@ -952,6 +955,7 @@ export const TEMPLATE_REGISTRY = {
     color: 'from-violet-50 to-purple-50',
     compat: 'online',
     desc: 'Split-column design with sidebar for skills and a main content area.',
+    thumbnail: '/thumbnails/two-column.png', // Placeholder or use professional-modern for now if needed? No, I'll use placeholders for missing ones.
     code: TEMPLATE_TWO_COL,
   },
   'minimalist': {
@@ -962,6 +966,7 @@ export const TEMPLATE_REGISTRY = {
     color: 'from-slate-50 to-gray-100',
     compat: 'online',
     desc: 'Ultra-clean single-column resume with subtle rule accents.',
+    thumbnail: '/thumbnails/minimalist.png',
     code: TEMPLATE_MINIMALIST,
   },
   'academic': {
@@ -972,6 +977,7 @@ export const TEMPLATE_REGISTRY = {
     color: 'from-amber-50 to-yellow-50',
     compat: 'online',
     desc: 'Long-form CV for academic and research positions with publications.',
+    thumbnail: '/thumbnails/academic.png',
     code: TEMPLATE_ACADEMIC,
   },
   'professional-modern': {
@@ -982,6 +988,7 @@ export const TEMPLATE_REGISTRY = {
     color: 'from-indigo-50 to-blue-50',
     compat: 'overleaf',
     desc: 'Highly structured, ATS-optimized RenderCV style for experienced pros.',
+    thumbnail: '/thumbnails/professional-modern.png',
     code: TEMPLATE_PROFESSIONAL,
   },
 };

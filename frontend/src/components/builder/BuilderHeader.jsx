@@ -93,12 +93,20 @@ export default function BuilderHeader({
               {isSyncing ? <Loader2 size={14} className="animate-spin mr-2" /> : <div className="w-2 h-2 bg-white rounded-full mr-2 shadow-[0_0_10px_#fff]" />}
               Cloud Sync
             </button>
+            <button 
+              onClick={handleDownloadPdf}
+              className="px-6 py-2.5 bg-blue-600 text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-blue-700 transition shadow-xl shadow-blue-200 flex items-center"
+            >
+              <FileText size={14} className="mr-2" />
+              Direct PDF
+            </button>
             <button onClick={handleGenerate} disabled={loading} className="px-6 py-2.5 bg-slate-900 text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-slate-800 transition shadow-xl shadow-slate-200 disabled:opacity-50 flex items-center">
               {loading && <Loader2 size={14} className="animate-spin mr-2" />}
               Sync & Preview 🚀
             </button>
           </div>
         )}
+
 
         {activeTab === 'preview' && (
           <button 

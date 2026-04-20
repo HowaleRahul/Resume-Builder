@@ -13,17 +13,28 @@ const TAG_COLORS = {
 export default function TemplateCard({ tpl, tKey }) {
   return (
     <div className="bg-white rounded-3xl border border-slate-200 overflow-hidden hover:shadow-2xl hover:shadow-indigo-200/40 transition-all duration-300 group">
-      <div className={`h-40 bg-linear-to-br ${tpl.color} relative p-6 flex flex-col justify-between overflow-hidden`}>
-        <div className="absolute -bottom-4 -left-4 w-32 h-32 bg-white/10 rounded-full blur-xl" />
-        <div className={`self-end px-3 py-1 rounded-full text-[10px] font-black tracking-widest uppercase shadow-sm ${TAG_COLORS[tpl.tagColor] || TAG_COLORS.slate}`}>
+      <div className={`h-48 bg-linear-to-br ${tpl.color} relative overflow-hidden group`}>
+        {tpl.thumbnail ? (
+          <img 
+            src={tpl.thumbnail} 
+            alt={tpl.label} 
+            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-90 group-hover:opacity-100"
+          />
+        ) : (
+          <div className="p-6 flex flex-col justify-between h-full">
+            <div className="absolute -bottom-4 -left-4 w-32 h-32 bg-white/10 rounded-full blur-xl" />
+            <div className="space-y-2 relative">
+              <div className="w-24 h-2 bg-white/30 rounded" />
+              <div className="w-full h-1.5 bg-white/20 rounded" />
+              <div className="w-5/6 h-1.5 bg-white/20 rounded" />
+            </div>
+          </div>
+        )}
+        <div className={`absolute top-4 right-4 px-3 py-1 rounded-full text-[10px] font-black tracking-widest uppercase shadow-md ${TAG_COLORS[tpl.tagColor] || TAG_COLORS.slate}`}>
           {tpl.tag}
         </div>
-        <div className="space-y-2 relative">
-          <div className="w-24 h-2 bg-white/30 rounded" />
-          <div className="w-full h-1.5 bg-white/20 rounded" />
-          <div className="w-5/6 h-1.5 bg-white/20 rounded" />
-        </div>
       </div>
+
 
       <div className="p-6">
         <h3 className="text-lg font-black text-slate-900 mb-1">{tpl.label}</h3>

@@ -89,6 +89,7 @@ class ResumeService {
       resume.generatedLatexCode = generatedLatex || resume.generatedLatexCode;
       resume.latexStructure = resumeData?.latexStructure || resume.latexStructure;
       resume.templateType = templateType || resume.templateType;
+      resume.atsScore = atsScore || resume.atsScore;
       
       // Add a new version
       const nextVersion = (resume.versions?.length || 0) + 1;
@@ -112,6 +113,7 @@ class ResumeService {
         skills: resumeData?.skills || [],
         originalLatexCode: latexCode,
         generatedLatexCode: generatedLatex,
+        atsScore: atsScore || 0,
         latexStructure: resumeData?.latexStructure || latexCode,
         templateType: templateType || 'moderncv',
         versions: [{ versionNumber: 1, jsonSnapshot: resumeData }]

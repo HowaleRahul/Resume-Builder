@@ -464,8 +464,10 @@ export const useBuilder = () => {
             resumeData,
             latexCode: generatedLatex,
             generatedLatex,
-            templateType
+            templateType,
+            atsScore: jdAnalysis?.score || 0
           });
+
           if (res.data.success) {
             setResumeId(res.data.resumeId);
             toast.success("Synchronized with cloud! ☁️", { icon: '✅' });

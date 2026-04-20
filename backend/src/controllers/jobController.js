@@ -21,14 +21,22 @@ exports.createJob = async (req, res) => {
 };
 
 exports.getJobs = async (req, res) => {
+  const { userId } = req.params;
   try {
-    const jobs = await Job.find({ userId: req.params.userId }).sort({ updatedAt: -1 });
+    logger.info(`Fetching jobs for user: ${userId}`);
+    const jobs = await Job.find({ userId }).sort({ updatedAt: -1 });
+    logger.info(`Found ${jobs.length} jobs for user: ${userId}`);
     res.json({ success: true, jobs });
   } catch (err) {
-    logger.error('Error fetching jobs', { error: err.message, userId: req.params.userId });
+    logger.error('Error fetching jobs', { 
+      error: err.message, 
+      userId,
+      stack: err.stack 
+    });
     res.status(500).json({ success: false, message: 'Server error', details: err.message });
   }
 };
+
 
 exports.updateJob = async (req, res) => {
   try {

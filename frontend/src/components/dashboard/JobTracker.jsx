@@ -41,13 +41,18 @@ export default function JobTracker() {
   const fetchJobs = async () => {
     try {
       const res = await axios.get(`${API_BASE_URL}/api/jobs/list/${user.id}`);
-      if (res.data.success) setJobs(res.data.jobs);
+      if (res.data.success) {
+        setJobs(res.data.jobs || []);
+      }
     } catch (err) {
-      toast.error('Failed to load jobs');
+      const errorDetail = err.response?.data?.details || err.message;
+      toast.error(`Job Tracker: ${errorDetail}`);
+      console.error("Job Fetch Error:", err);
     } finally {
       setLoading(false);
     }
   };
+
 
   const handleAddJob = async (e) => {
     e.preventDefault();
