@@ -5,17 +5,23 @@ import toast from 'react-hot-toast';
 import { useBuilder } from '../hooks/useBuilder';
 import { TEMPLATE_REGISTRY } from '../templates';
 import BuilderHeader from '../components/builder/BuilderHeader';
+
 import SourceImport from '../components/builder/SourceImport';
 import VisualEditor from '../components/builder/VisualEditor';
 import CodeEditor from '../components/builder/CodeEditor';
 import AiPowerLab from '../components/builder/AiPowerLab';
 import PdfPreview from '../components/preview/PdfPreview';
+import ParseConfirmationModal from '../components/builder/ParseConfirmationModal';
 
+
+import { useUser } from '@clerk/clerk-react';
 import API_BASE_URL from '../config/api';
 
 export default function Builder() {
+  const { user } = useUser();
   const { state, actions } = useBuilder();
   const location = useLocation();
+
 
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
@@ -80,6 +86,17 @@ export default function Builder() {
   return (
     <div className="flex-1 flex flex-col h-[calc(100vh-64px)] bg-slate-50 overflow-hidden relative">
       
+      {/* Parse Confirmation Modal */}
+      <ParseConfirmationModal 
+        isOpen={state.showParseModal}
+        parsedData={state.pendingParsedData}
+        currentData={state.resumeData}
+        onKeepCurrent={actions.handleParseConfirm_KeepCurrent}
+        onUseParsed={actions.handleParseConfirm_UseParsed}
+        onCancel={actions.handleParseConfirm_Cancel}
+        isLoading={state.loading}
+      />
+      
       {/* ─── Global Print Styles ────────────────────────────────────────────── */}
       <style>{`
         @media print {
@@ -105,7 +122,9 @@ export default function Builder() {
         {...state} 
         {...actions} 
         isSyncing={state.isSyncing}
+        user={user}
         handleDownloadPdf={handleDownloadPdf}
+
         TEMPLATE_REGISTRY={TEMPLATE_REGISTRY}
       />
 

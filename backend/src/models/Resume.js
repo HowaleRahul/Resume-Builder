@@ -6,6 +6,7 @@ const ExperienceSchema = new mongoose.Schema({
   companyOrInst: String,
   location: String,
   details: String,
+  bullets: [String], // Added for bullet point support
   description: String
 });
 
@@ -23,12 +24,20 @@ const ResumeSchema = new mongoose.Schema({
     name: String,
     email: String,
     phone: String,
-    location: String
+    location: String,
+    github: String,
+    linkedin: String,
+    website: String,
+    objective: String
   },
+  summary: String,
   education: [ExperienceSchema],
   experience: [ExperienceSchema],
   projects: [ExperienceSchema],
-  skills: [{ text: String }],
+  skills: [{ 
+    category: String, 
+    items: [String] 
+  }],
   customSections: [{ title: String, content: String }],
   
   // Storage fields
@@ -40,6 +49,7 @@ const ResumeSchema = new mongoose.Schema({
     default: 'moderncv'
   },
   atsScore: Number,
+
   
   versions: [{
     versionNumber: Number,

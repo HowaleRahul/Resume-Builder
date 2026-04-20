@@ -16,10 +16,10 @@ export default function BuilderHeader({
   handleGenerate,
   handleDownloadPdf,
   setJdSidebarOpen,
-  loading,
-  latexInput,
   TEMPLATE_REGISTRY,
-  isSyncing
+  isSyncing,
+  handleCloudSync,
+  user
 }) {
   return (
     <div className="bg-white border-b border-slate-200 px-6 py-3 flex items-center justify-between z-10 shrink-0 no-print">
@@ -30,10 +30,15 @@ export default function BuilderHeader({
           <TabButton active={activeTab === 'preview'} onClick={() => setActiveTab('preview')} icon={<Play size={16}/>} label="Export PDF" disabled={!generatedLatex && !previewCode} />
         </div>
 
-        {isSyncing && (
+        {isSyncing ? (
           <div className="flex items-center space-x-2 animate-pulse">
+            <div className="w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.5)]"></div>
+            <span className="text-[10px] font-black uppercase tracking-widest text-blue-600">Syncing...</span>
+          </div>
+        ) : (
+          <div className="flex items-center space-x-2">
             <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"></div>
-            <span className="text-[10px] font-black uppercase tracking-widest text-emerald-600">Saved to Cloud</span>
+            <span className="text-[10px] font-black uppercase tracking-widest text-emerald-600">Cloud Connected</span>
           </div>
         )}
       </div>
@@ -79,6 +84,14 @@ export default function BuilderHeader({
             >
               <Sparkles size={14} className="mr-2 group-hover:scale-125 transition-transform" />
               AI Power Lab
+            </button>
+            <button 
+              onClick={() => handleCloudSync(user?.id)}
+              disabled={isSyncing || loading}
+              className={`px-6 py-2.5 rounded-xl font-black text-xs uppercase tracking-widest transition shadow-xl flex items-center ${isSyncing ? 'bg-slate-100 text-slate-400' : 'bg-emerald-600 text-white hover:bg-emerald-700 shadow-emerald-200'}`}
+            >
+              {isSyncing ? <Loader2 size={14} className="animate-spin mr-2" /> : <div className="w-2 h-2 bg-white rounded-full mr-2 shadow-[0_0_10px_#fff]" />}
+              Cloud Sync
             </button>
             <button onClick={handleGenerate} disabled={loading} className="px-6 py-2.5 bg-slate-900 text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-slate-800 transition shadow-xl shadow-slate-200 disabled:opacity-50 flex items-center">
               {loading && <Loader2 size={14} className="animate-spin mr-2" />}

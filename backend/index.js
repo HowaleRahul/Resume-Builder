@@ -10,7 +10,7 @@ const logger = require('./src/utils/logger');
 const requestLogger = require('./src/middleware/requestLogger');
 
 // Initial boot check
-console.log('🚀 ResumeForge AI: Initialization sequence started...');
+console.log('🚀 ResumeForge: Initialization sequence started...');
 
 // Environment Critical Check
 const hasGeminiKey = Boolean(process.env.GEMINI_API_KEY);
@@ -138,7 +138,7 @@ const PORT = process.env.PORT || 5000;
 
 const server = app.listen(PORT, () => {
   logger.info(`✅ Service is listening on port ${PORT}`, { port: PORT, env: process.env.NODE_ENV || 'development' });
-  console.log(`🚀 ResumeForge AI: Backend is active on port ${PORT}`);
+  console.log(`🚀 ResumeForge: Backend is active on port ${PORT}`);
 }).on('error', (err) => {
   if (err.code === 'EADDRINUSE') {
     logger.error(`Port ${PORT} is already in use.`);

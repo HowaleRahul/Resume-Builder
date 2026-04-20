@@ -17,6 +17,7 @@ export const useComparison = () => {
   const [compareInputMode, setCompareInputMode] = useState('latex');
   const [resumeAText, setResumeAText] = useState('');
   const [resumeBText, setResumeBText] = useState('');
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [resumeALabel, setResumeALabel] = useState('Resume A');
   const [resumeBLabel, setResumeBLabel] = useState('Resume B');
   const [compareResult, setCompareResult] = useState(null);
@@ -75,9 +76,14 @@ export const useComparison = () => {
     formData.append('file', file);
     
     setLoading(true);
+    setUploadProgress(0);
     try {
       const res = await axios.post(`${API_BASE_URL}/api/ai/parse-pdf`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
+        headers: { 'Content-Type': 'multipart/form-data' },
+        onUploadProgress: (progressEvent) => {
+          const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+          setUploadProgress(percent);
+        }
       });
       if (res.data.success) {
         toast.success("PDF Content Extracted!", { icon: '📄' });
@@ -88,6 +94,7 @@ export const useComparison = () => {
       return null;
     } finally {
       setLoading(false);
+      setTimeout(() => setUploadProgress(0), 1500);
     }
   };
 
@@ -95,6 +102,7 @@ export const useComparison = () => {
     state: {
       mode, setMode,
       loading,
+      uploadProgress,
       jdText, setJdText,
       resumeText, setResumeText,
       jdResult,

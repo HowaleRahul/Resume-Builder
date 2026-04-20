@@ -88,6 +88,25 @@ class AiService {
     return await this.runPrompt(prompt, true);
   }
 
+  async parseResumeText(text) {
+    const prompt = `Parse the following resume text into a strictly structured JSON format. 
+    Focus on extracting:
+    - personal (name, email, phone, location, github, linkedin, website)
+    - summary (Professional summary)
+    - experience (Array of objects: title, companyOrInst, location, date, bullets[])
+    - education (Array of objects: title, companyOrInst, location, date, details)
+    - skills (Array of objects: category, items[])
+    - projects (Array of objects: title, techStack, bullets[])
+
+    Ensure all dates are preserved exactly. Use empty strings or empty arrays if information is missing.
+    Return ONLY JSON.
+
+    RESUME TEXT:
+    ${text}`;
+
+    return await this.runPrompt(prompt, true);
+  }
+
   async checkLatexSyntax(latexCode) {
     const prompt = `Check this LaTeX code for syntax errors. Return JSON with 'valid' (boolean) and 'errors' (array of strings). 
     LaTeX Code: ${latexCode}`;

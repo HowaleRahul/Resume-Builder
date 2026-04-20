@@ -350,4 +350,4 @@ For each step, refer to:
 - Frontend code examples: `FRONTEND_IMPLEMENTATION_GUIDE.md`
 - API endpoints: See controller comments in code
 
-Your ResumeForge AI now has **lossless LaTeX editing** with formatting preservation! 🎉
+Your ResumeForge now has **lossless LaTeX editing** with formatting preservation! 🎉

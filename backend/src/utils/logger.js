@@ -99,7 +99,7 @@ const rejectionHandlers = ENABLE_FILE_LOGGING && NODE_ENV !== 'production' ? [
 const logger = createLogger({
   levels: customLevels.levels,
   level: LOG_LEVEL,
-  defaultMeta: { service: 'ResumeForge AI' },
+  defaultMeta: { service: 'ResumeForge' },
   transports: transportsList,
   exceptionHandlers,
   rejectionHandlers,

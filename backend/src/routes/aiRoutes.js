@@ -17,6 +17,8 @@ router.post('/cover-letter', aiController.generateCoverLetter);
 router.post('/skill-gap', aiController.getSkillGap);
 router.post('/interview-prep', aiController.getInterviewPrep);
 router.post('/analyze-portfolio', aiController.analyzePortfolio);
+router.post('/parse-text', aiController.parseResumeText);
 router.post('/parse-pdf', upload.single('file'), aiController.parsePdf);
+
 
 module.exports = router;

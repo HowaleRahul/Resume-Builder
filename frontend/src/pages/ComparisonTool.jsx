@@ -106,6 +106,21 @@ export default function ComparisonTool() {
                      <span className="font-black text-slate-900 tracking-tight">Technical Resume</span>
                    </div>
                    <div className="flex items-center space-x-2">
+                     <button 
+                        onClick={() => {
+                           const saved = localStorage.getItem('resume_session');
+                           if (saved) {
+                              try {
+                                 const parsed = JSON.parse(saved);
+                                 state.setResumeText(JSON.stringify(parsed.resumeData, null, 2));
+                                 toast.success("Loaded active resume data");
+                              } catch (e) { toast.error("Failed to load active resume"); }
+                           } else { toast.error("No active session found"); }
+                        }}
+                        className="flex items-center cursor-pointer text-[9px] font-black uppercase tracking-widest text-emerald-600 bg-emerald-50 px-3 py-1.5 rounded-xl hover:bg-emerald-100 transition mr-2"
+                     >
+                        <Zap size={10} className="mr-2" /> Load Active
+                     </button>
                      <label className="flex items-center cursor-pointer text-[9px] font-black uppercase tracking-widest text-indigo-600 bg-indigo-50 px-3 py-1.5 rounded-xl hover:bg-indigo-100 transition">
                         <Upload size={10} className="mr-2" /> PDF
                         <input type="file" accept=".pdf" className="hidden" onChange={e => handleFile(e, state.setResumeText, null, true)} />
@@ -187,7 +202,6 @@ export default function ComparisonTool() {
                    <button 
                      key={m} onClick={() => {
                         state.setCompareInputMode(m);
-                        setCompareInputMode(m); // ensure local consistency if any
                      }}
                      className={`px-6 py-2 rounded-lg text-xs font-black uppercase transition-all ${state.compareInputMode === m ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400'}`}
                    >
@@ -291,6 +305,15 @@ export default function ComparisonTool() {
         )}
       </div>
       
+      {state.loading && (
+        <div className="fixed inset-0 bg-slate-900/10 backdrop-blur-[2px] z-[60] flex items-center justify-center transition-all">
+          <div className="bg-white p-8 rounded-3xl shadow-2xl flex flex-col items-center space-y-4 animate-bounce">
+            <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+            <p className="text-sm font-black text-slate-900 uppercase tracking-widest">AI Matching in Progress...</p>
+          </div>
+        </div>
+      )}
+
       <style>{`
         @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
         @keyframes slide-up { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
@@ -314,6 +337,21 @@ function ComparisonInputCard({ label, setLabel, value, setValue, mode, onUpload,
            onChange={e => setLabel(e.target.value)}
          />
          <div className="flex items-center space-x-2">
+           <button 
+              onClick={() => {
+                 const saved = localStorage.getItem('resume_session');
+                 if (saved) {
+                    try {
+                       const parsed = JSON.parse(saved);
+                       setValue(JSON.stringify(parsed.resumeData, null, 2));
+                       toast.success(`Loaded active resume to ${label}`);
+                    } catch (e) { toast.error("Failed to load active resume"); }
+                 } else { toast.error("No active session found"); }
+              }}
+              className="flex items-center cursor-pointer text-[9px] font-black uppercase tracking-widest text-emerald-600 bg-emerald-50 px-3 py-1.5 rounded-xl hover:bg-emerald-100 transition mr-2"
+           >
+              <Zap size={10} className="mr-2" /> Load Active
+           </button>
            <label className="flex items-center cursor-pointer text-[9px] font-black uppercase tracking-widest text-blue-600 bg-blue-50 px-3 py-1.5 rounded-xl hover:bg-blue-100 transition">
               <Upload size={10} className="mr-2" /> PDF
               <input type="file" accept=".pdf" className="hidden" onChange={onPdfUpload} />

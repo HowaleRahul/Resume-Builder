@@ -66,25 +66,60 @@ class ResumeService {
   }
 
   async save(data) {
-    const { userId, title, extractedData, latexCode, templateType } = data;
+    const { userId, resumeId, title, resumeData, latexCode, templateType, generatedLatex } = data;
     if (!userId) throw new Error('userId is required');
 
-    const newResume = new Resume({
-      userId,
-      title: title || 'Untitled Resume',
-      personal: extractedData?.personal || {},
-      education: extractedData?.education || [],
-      experience: extractedData?.experience || [],
-      projects: extractedData?.projects || [],
-      skills: extractedData?.skills || [],
-      originalLatexCode: latexCode,
-      latexStructure: extractedData?.latexStructure || latexCode,
-      templateType: templateType || 'jitin-nair',
-      versions: [{ versionNumber: 1, jsonSnapshot: extractedData }]
-    });
+    // If resumeId exists, we update. Otherwise, create new.
+    let resume;
+    if (resumeId && resumeId !== 'undefined' && resumeId !== 'null') {
+      resume = await Resume.findById(resumeId);
+    }
 
-    return await newResume.save();
+    if (resume) {
+      // UPDATE EXISTING
+      resume.title = title || resume.title;
+      resume.personal = resumeData?.personal || resume.personal;
+      resume.summary = resumeData?.summary || resume.summary;
+      resume.education = resumeData?.education || resume.education;
+      resume.experience = resumeData?.experience || resume.experience;
+      resume.projects = resumeData?.projects || resume.projects;
+      resume.skills = resumeData?.skills || resume.skills;
+      resume.originalLatexCode = latexCode || resume.originalLatexCode;
+      resume.generatedLatexCode = generatedLatex || resume.generatedLatexCode;
+      resume.latexStructure = resumeData?.latexStructure || resume.latexStructure;
+      resume.templateType = templateType || resume.templateType;
+      
+      // Add a new version
+      const nextVersion = (resume.versions?.length || 0) + 1;
+      resume.versions.push({
+        versionNumber: nextVersion,
+        jsonSnapshot: resumeData,
+        timestamp: new Date()
+      });
+
+      return await resume.save();
+    } else {
+      // CREATE NEW
+      const newResume = new Resume({
+        userId,
+        title: title || 'Untitled Resume',
+        personal: resumeData?.personal || {},
+        summary: resumeData?.summary || '',
+        education: resumeData?.education || [],
+        experience: resumeData?.experience || [],
+        projects: resumeData?.projects || [],
+        skills: resumeData?.skills || [],
+        originalLatexCode: latexCode,
+        generatedLatexCode: generatedLatex,
+        latexStructure: resumeData?.latexStructure || latexCode,
+        templateType: templateType || 'moderncv',
+        versions: [{ versionNumber: 1, jsonSnapshot: resumeData }]
+      });
+
+      return await newResume.save();
+    }
   }
+
 
   async listByUser(userId) {
     return await Resume.find({ userId })

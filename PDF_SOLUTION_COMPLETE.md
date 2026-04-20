@@ -1,7 +1,7 @@
 # 🎉 LaTeX PDF Generation on Vercel - WORKING!
 
 ## Overview
-Your ResumeForge AI now has **full PDF generation support on Vercel** with a robust, multi-layered solution that ensures PDFs work everywhere.
+Your ResumeForge now has **full PDF generation support on Vercel** with a robust, multi-layered solution that ensures PDFs work everywhere.
 
 ---
 
@@ -28,7 +28,7 @@ Your ResumeForge AI now has **full PDF generation support on Vercel** with a rob
 ## 📊 How It Works
 
 ```
-User clicks "Download PDF" on ResumeForge AI
+User clicks "Download PDF" on ResumeForge
     ↓
 Backend receives LaTeX code
     ↓
@@ -153,4 +153,4 @@ Response: PDF file (application/pdf)
 - ✅ User authentication
 - ✅ Database persistence
 
-Your ResumeForge AI is **production-ready** with full PDF support! 🎉
+Your ResumeForge is **production-ready** with full PDF support! 🎉

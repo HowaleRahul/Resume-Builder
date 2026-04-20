@@ -10,7 +10,7 @@ export default function Sidebar({ activeSubTab, setActiveSubTab }) {
           <div className="w-10 h-10 rounded-xl bg-linear-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white font-black text-2xl shadow-lg ring-4 ring-blue-50">
             L
           </div>
-          <span className="text-xl font-black text-slate-900 tracking-tighter">ResumeForge AI</span>
+          <span className="text-xl font-black text-slate-900 tracking-tighter">ResumeForge</span>
         </div>
 
         <div className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">Core Suite</div>

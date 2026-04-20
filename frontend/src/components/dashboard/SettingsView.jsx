@@ -19,7 +19,7 @@ export default function SettingsView() {
     <div className="p-8 max-w-4xl mx-auto space-y-12 animate-fade-in pb-32">
       <header className="mb-12">
         <h2 className="text-4xl font-black text-slate-900 tracking-tighter mb-2">Workspace Settings</h2>
-        <p className="text-slate-500 font-medium">Manage your ResumeForge AI profile and engineering preferences.</p>
+        <p className="text-slate-500 font-medium">Manage your ResumeForge profile and engineering preferences.</p>
       </header>
 
       {/* Profile Section */}
@@ -66,7 +66,7 @@ export default function SettingsView() {
             <Palette size={24} />
           </div>
           <h3 className="text-xl font-black text-slate-900 mb-2">Visual Engine</h3>
-          <p className="text-sm text-slate-500 font-medium mb-6">Customize how ResumeForge AI appears in your workspace.</p>
+          <p className="text-sm text-slate-500 font-medium mb-6">Customize how ResumeForge appears in your workspace.</p>
           <div className="space-y-4">
             <div className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100">
                <span className="text-sm font-bold text-slate-700">Interface Theme</span>
@@ -123,7 +123,7 @@ export default function SettingsView() {
       </section>
 
       <footer className="text-center pt-10">
-         <p className="text-[10px] font-black uppercase text-slate-300 tracking-[0.4em]">ResumeForge AI Engine v1.0.4 · Production Build</p>
+         <p className="text-[10px] font-black uppercase text-slate-300 tracking-[0.4em]">ResumeForge Engine v1.0.4 · Production Build</p>
       </footer>
     </div>
   );

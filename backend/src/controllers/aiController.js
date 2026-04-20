@@ -158,3 +158,13 @@ exports.parsePdf = async (req, res) => {
     res.status(500).json({ error: 'PDF parsing failed', details: err.message });
   }
 };
+exports.parseResumeText = async (req, res) => {
+  try {
+    const { text } = req.body;
+    if (!text) return res.status(400).json({ error: "No text provided" });
+    const data = await aiService.parseResumeText(text);
+    res.json({ success: true, data });
+  } catch (err) {
+    res.status(500).json({ error: 'Text parsing failed', details: err.message });
+  }
+};

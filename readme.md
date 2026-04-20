@@ -1,6 +1,6 @@
-# ResumeForge AI
+# ResumeForge
 
-**ResumeForge AI** is a full-stack resume builder designed to help users create polished, professional resumes with AI-assisted content generation and real-time previewing.
+**ResumeForge** is a full-stack resume builder designed to help users create polished, professional resumes with AI-assisted content generation and real-time previewing.
 
 ## 🚀 Project Overview
 
@@ -60,7 +60,7 @@ npm run build
 
 ## 💡 Recommended Project Name
 
-The project is now named **ResumeForge AI**, which reflects the goal of crafting strong career documents using AI support.
+The project is now named **ResumeForge**, which reflects the goal of crafting strong career documents using AI support.
 
 ---
 

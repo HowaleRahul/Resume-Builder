@@ -34,8 +34,15 @@ export const useBuilder = () => {
   const [portfolioUrl, setPortfolioUrl] = useState('');
   const [latexInput, setLatexInput] = useState('');
   const [syntaxStatus, setSyntaxStatus] = useState(null); // null | 'valid' | 'invalid'
+  
+  // Parse Confirmation Modal States
+  const [showParseModal, setShowParseModal] = useState(false);
+  const [pendingParsedData, setPendingParsedData] = useState(null);
+  const [resumeId, setResumeId] = useState(null);
+  const [isSyncing, setIsSyncing] = useState(false);
 
   // Load from local storage on mount
+
   useEffect(() => {
     const saved = localStorage.getItem('resume_session');
     if (saved) {
@@ -43,6 +50,7 @@ export const useBuilder = () => {
         const parsed = JSON.parse(saved);
         if (parsed.resumeData) setResumeData(parsed.resumeData);
         if (parsed.templateType) setTemplateType(parsed.templateType);
+        if (parsed.resumeId) setResumeId(parsed.resumeId);
       } catch (e) { 
         console.error("Failed to load session", e);
         initializeEmptyData();
@@ -66,9 +74,9 @@ export const useBuilder = () => {
   // Save to local storage on data change
   useEffect(() => {
     if (resumeData) {
-      localStorage.setItem('resume_session', JSON.stringify({ resumeData, templateType }));
+      localStorage.setItem('resume_session', JSON.stringify({ resumeData, templateType, resumeId }));
     }
-  }, [resumeData, templateType]);
+  }, [resumeData, templateType, resumeId]);
 
   const handleGenerate = async (data = resumeData, type = templateType) => {
     if (!data) return;
@@ -202,14 +210,13 @@ export const useBuilder = () => {
           if (res.data.data.latexStructure) validated.latexStructure = res.data.data.latexStructure;
           if (res.data.data.originalLatexCode) validated.originalLatexCode = res.data.data.originalLatexCode;
 
-          setResumeData(validated);
-          setGeneratedLatex(res.data.data.latexStructure || '');
-          setPreviewCode(res.data.data.latexStructure || '');
-          setActiveTab('edit');
+          // Store parsed data and show modal for confirmation
+          setPendingParsedData(validated);
+          setShowParseModal(true);
           
           const msg = res.data.hasStructure 
-            ? "LaTeX parsed! Original formatting will be preserved. ✅" 
-            : "LaTeX parsed successfully!";
+            ? "LaTeX parsed! Choose how to proceed. ✅" 
+            : "LaTeX parsed successfully! Choose how to proceed.";
           toast.success(msg);
         } else {
           console.warn("⚠️ AI VALIDATION FAILED. Structure:", res.data.data);
@@ -225,14 +232,67 @@ export const useBuilder = () => {
     }
   };
 
-  const handleQuickJDMatch = async () => {
+  const handleParseText = async (text) => {
+    if (!text || !text.trim()) return toast.error("No text to parse.");
+    setLoading(true);
+    try {
+      const res = await axios.post(`${API_BASE_URL}/api/ai/parse-text`, { text });
+      if (res.data.success) {
+        const validated = validateResumeData(res.data.data);
+        if (validated) {
+          setPendingParsedData(validated);
+          setShowParseModal(true);
+          toast.success("AI parsed your resume content! Preview and confirm. 🚀");
+        }
+      }
+    } catch (error) {
+      toast.error(`Parsing failed: ${error.response?.data?.details || error.message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleParseConfirm_KeepCurrent = () => {
+    // Keep current data, just load LaTeX structure
+    setResumeData(prev => ({
+      ...prev,
+      latexStructure: pendingParsedData?.latexStructure,
+      originalLatexCode: pendingParsedData?.originalLatexCode
+    }));
+    setGeneratedLatex(pendingParsedData?.latexStructure || '');
+    setPreviewCode(pendingParsedData?.latexStructure || '');
+    setActiveTab('edit');
+    setShowParseModal(false);
+    setPendingParsedData(null);
+    toast.success('LaTeX structure preserved. Your current data remains unchanged.');
+  };
+
+  const handleParseConfirm_UseParsed = () => {
+    // Replace with parsed data
+    setResumeData(pendingParsedData);
+    setGeneratedLatex(pendingParsedData?.latexStructure || '');
+    setPreviewCode(pendingParsedData?.latexStructure || '');
+    setActiveTab('edit');
+    setShowParseModal(false);
+    setPendingParsedData(null);
+    toast.success('Resume data updated with parsed LaTeX! 🚀');
+  };
+
+  const handleParseConfirm_Cancel = () => {
+    setShowParseModal(false);
+    setPendingParsedData(null);
+    toast.error('Parse cancelled. Your data remains unchanged.');
+  };
+
+  const handleQuickJDMatch = async (manualResumeText = null) => {
     if (!jdText.trim()) return toast.error("Paste a Job Description first.");
     setLoadingStates(prev => ({ ...prev, jdMatch: true }));
     try {
       const res = await axios.post(`${API_BASE_URL}/api/ai/jd-match`, {
         jobDescription: jdText,
-        resumeText: JSON.stringify(resumeData)
+        resumeText: manualResumeText || JSON.stringify(resumeData)
       });
+
       if (res.data.success) {
         setJdAnalysis(res.data);
         toast.success("ATS Analysis Ready!");
@@ -357,11 +417,21 @@ export const useBuilder = () => {
       aiResult, setAiResult,
       portfolioUrl, setPortfolioUrl,
       latexInput, setLatexInput,
-      syntaxStatus, setSyntaxStatus
+      syntaxStatus, setSyntaxStatus,
+      // Parse Modal States
+      showParseModal, 
+      pendingParsedData,
+      resumeId,
+      isSyncing
     },
     actions: {
       handleGenerate,
       handleParse,
+      handleParseText,
+      handleParseConfirm_KeepCurrent,
+
+      handleParseConfirm_UseParsed,
+      handleParseConfirm_Cancel,
       handleCheckSyntax: async () => {
         if (!latexInput.trim()) {
            setSyntaxStatus(null);
@@ -382,7 +452,30 @@ export const useBuilder = () => {
       handleDownloadPdf,
       updatePersonal,
       handleEnhanceBullet,
-      handleResetTemplate
+      handleResetTemplate,
+      handleCloudSync: async (userId) => {
+        if (!userId) return toast.error("User ID required for cloud sync.");
+        setIsSyncing(true);
+        try {
+          const res = await axios.post(`${API_BASE_URL}/api/resume/save`, {
+            userId,
+            resumeId,
+            title: resumeData.personal?.name ? `${resumeData.personal.name}'s Resume` : 'Untitled Resume',
+            resumeData,
+            latexCode: generatedLatex,
+            generatedLatex,
+            templateType
+          });
+          if (res.data.success) {
+            setResumeId(res.data.resumeId);
+            toast.success("Synchronized with cloud! ☁️", { icon: '✅' });
+          }
+        } catch (err) {
+          toast.error("Cloud sync failed. Working locally.");
+        } finally {
+          setIsSyncing(false);
+        }
+      }
     }
   };
 };
