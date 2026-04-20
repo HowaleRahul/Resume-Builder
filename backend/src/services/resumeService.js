@@ -66,8 +66,9 @@ class ResumeService {
   }
 
   async save(data) {
-    const { userId, resumeId, title, resumeData, latexCode, templateType, generatedLatex } = data;
+    const { userId, resumeId, title, resumeData, latexCode, templateType, generatedLatex, atsScore } = data;
     if (!userId) throw new Error('userId is required');
+
 
     // If resumeId exists, we update. Otherwise, create new.
     let resume;
