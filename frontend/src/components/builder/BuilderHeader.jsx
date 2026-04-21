@@ -19,7 +19,9 @@ export default function BuilderHeader({
   TEMPLATE_REGISTRY,
   isSyncing,
   handleCloudSync,
-  user
+  user,
+  latexInput,
+  loading
 }) {
   return (
     <div className="bg-white border-b border-slate-200 px-6 py-3 flex items-center justify-between z-10 shrink-0 no-print">
